@@ -213,7 +213,10 @@ function override_getUserMedia()
     console.log("can access navigator")
     navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) { 
         return new Promise((resolve, reject) => {
-            console.log("Original Requested Constraints:\n" , JSON.stringify(constraints))
+            console.log(
+                "Original Requested Constraints:\n" , 
+                JSON.stringify(constraints)
+            )
             originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
             .then(stream => resolve(get_canvas_stream_beta(stream, constraints)))    //  this is where we'd divert the stream to a call that modifies it, before resolving the promise
             .catch(reject)
@@ -232,9 +235,11 @@ function override_getUserMediaFallback()
     if (navigator.getUserMedia)
     {
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
-            console.log("Original FALLBACK Requested Constraints:\n" , JSON.stringify(constraints))
-            originalGetUserMedia.bind(navigator)(constraints, function (stream) 
-            {   
+            console.log(
+                "Original FALLBACK Requested Constraints:\n",
+                JSON.stringify(constraints)
+                )
+            originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };  
@@ -263,8 +268,10 @@ function get_canvas_stream_beta(stream, constraints)
 
         Animator.original_stream = stream
         var original_constraints = stream.getVideoTracks()[0].getCapabilities()
-        console.log("ORIG VIDEO META:", JSON.stringify(original_constraints))
-
+        console.log(
+            "ORIG VIDEO META:",
+            JSON.stringify(original_constraints)
+        )
 
         //  Adapt the canvas to new contraints, remove previous artifacts
         remove_dynamic_elements()
@@ -282,14 +289,18 @@ function get_canvas_stream_beta(stream, constraints)
         video.play()
 
         //  log new stream's constraints
-        console.log("NEW VIDEO META:", 
-                        JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities()))
+        console.log(
+            "NEW VIDEO META:", 
+            JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities)
+        )
 
         if(constraints.audio)
         {
             stream_new.addTrack(stream.getAudioTracks()[0]);
-            console.log("AUDIO META:", 
-                            JSON.stringify(stream_new.getAudioTracks()[0].getCapabilities()))
+            console.log(
+                "AUDIO META:", 
+                JSON.stringify(stream_new.getAudioTracks()[0].getCapabilities())
+            )
         }
         Animator.video_on = true; // audioTimer's loop condition.
         audioTimerLoop(nextVideoFrame, 60)
@@ -301,8 +312,10 @@ function get_canvas_stream_beta(stream, constraints)
     {   
         //  only audio, just let the original stream be as is.
         console.log("Audio Only")
-        console.log("AUDIO META:", 
-                        JSON.stringify(stream.getAudioTracks()[0].getCapabilities()))
+        console.log(
+            "AUDIO META:", 
+            JSON.stringify(stream.getAudioTracks()[0].getCapabilities())
+        )
         return stream
     }
 
@@ -310,13 +323,10 @@ function get_canvas_stream_beta(stream, constraints)
     return stream;
 }
 
-
-
 /*
     Root function for drawing each frame, passed as callback to the AudioTimer.
     Not using requestAnimationFrame() callback as that gets suspended on tab switch/minimize, can't have that on a live video stream.
 */
-
 function nextVideoFrame()
 {
     /*
@@ -342,7 +352,7 @@ function nextVideoFrame()
 }
 
 /*
-    Base function for standard 2D filters.
+    Base function for filter application.
     The drawtype should ideally be fetched from extension config, controlled/edited by the user.
     Should be switchable on the fly!
 */
@@ -471,7 +481,10 @@ function audioTimerLoop(callback, frequency)
         if (!Animator.video_on) {    //  user broke the loop
             osc.onended = function() {
             aCtx.close();   //  clear the audioContext
-            console.log("Exiting Timer loop", Animator.video_on)
+            console.log(
+                "Exiting Timer loop",
+                Animator.video_on
+            )
             return
             };
         }

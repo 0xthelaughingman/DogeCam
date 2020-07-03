@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "DogeCam",
-  "description": "This extension will animate your live video",
+  "description": " A chrome extension to make your video calls Doge-y!",
   "version": "1.1",
 
   "icons": { 
@@ -18,7 +18,7 @@
     {
       "matches": ["https://*/*"],
       "js": ["base.js"],
-	  "run_at": "document_start"
+	    "run_at": "document_start"
     } 
   ],
   
@@ -28,7 +28,7 @@
   ],
   
   "background": {
-	"scripts":	["background.js"]
+    "scripts":	["background.js"]
   },
 
   "web_accessible_resources": [
