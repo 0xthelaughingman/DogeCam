@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Animator Configuration</title>
+        <link href="animator.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <p class="heading">Animator Configuration</p>
+        <div style="padding: 0px 8px;">
+            <div class="default-input">
+                <label class="container">No-Filter
+                    <input type="radio" id="no-filter" name="type" value="no-filter" checked/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="default-input">
+                <label class="container">Grayscale
+                    <input type="radio" id="grayscale" name="type" value="grayscale"/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="range-input">
+                <label class="container">Sepia
+                    <input type="radio" id="sepia" name="type" value="sepia"/>
+                    <span class="checkmark"></span>
+                </label>
+                <input type="text" id="sepia-text" name="sepia-text" value="50" readonly/>
+                <div class="range-input-slider">
+                    <input type="range" id="sepia-range" name="sepia" disabled />
+                </div>
+            </div>
+            
+            <div class="default-input">
+                <label class="container">Blur
+                    <input type="radio" id="blur" name="type" value="blur"/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="default-input">
+                <label class="container">TFJS-Pixel
+                    <input type="radio" id="tfjs-pixel" name="type" value="tfjs-pixel"/>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            
+            <div class="save-btn">
+                <button id="save-btn">SAVE</button>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="popup.js" charset="utf-8"></script>
