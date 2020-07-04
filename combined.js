@@ -390,6 +390,8 @@ function drawCanvas(canvas, img, draw_type)
             //  Scale and draw to primary canvas
             scale_draw(canvas, feed)
             break
+        case "new":
+        	break
     }
 }
 
