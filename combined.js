@@ -380,6 +380,36 @@ function drawCanvas(canvas, img, draw_type)
             canvas.getContext('2d').drawImage(img, 0, 0)
             break
 
+        case "invert":
+            canvas.getContext('2d').filter="invert(100)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
+        case "brightness":
+            canvas.getContext('2d').filter="brightness(150)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
+        case "contrast":
+            canvas.getContext('2d').filter="contrast(200)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
+        case "opacity":
+            canvas.getContext('2d').filter="opacity(50)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
+        case "saturate":
+            canvas.getContext('2d').filter="saturate(50)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
+        case "combined":
+            canvas.getContext('2d').filter="contrast(175) brightness(100)"
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            break
+
         case "tfjs-pixel":
             console.log("drawing tfjs" , Animator.tfjs_draw_counter)
             Animator.tfjs_draw_counter++
@@ -390,8 +420,6 @@ function drawCanvas(canvas, img, draw_type)
             //  Scale and draw to primary canvas
             scale_draw(canvas, feed)
             break
-        case "new":
-        	break
     }
 }
 
