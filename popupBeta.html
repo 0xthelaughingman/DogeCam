@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Animator Configuration</title>
+        <link href="popupBeta.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <p class="heading">Animator Configuration</p>
+        <div>
+            <div>
+                <div>
+                    <label for="video-ops">Video Filter Type:</label>
+                        <select  id="video-ops" name="video-ops">
+                            <option value="no-filter">No Filter</option>
+                            <option value="2d-filter">2D Filter</option>
+                            <option value="tfjs-pixel">TFJS Pixel</option>
+                        </select>
+
+                        <div class="options-2d" id="options-2d">
+                            <div>
+                                <select  id="filter-style-1" name="filter-style" class="filter-style">
+                                    <option value="no-filter">No Filter</option>
+                                    <option value="grayscale">Grayscale</option>
+                                    <option value="sepia">Sepia</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="invert">Invert</option>
+                                    <option value="contrast">Contrast</option>
+                                    <option value="brightness">Brightness</option>
+                                    <option value="saturate">Saturate</option>
+                                    <option value="opacity">Opacity</option>
+                                    
+                                </select>
+                                <div>
+                                    <input id="filter-param-1" class="filter-param" name="filter-param" type="range" min="0" max="100">
+                                </div>
+                            </div>
+                            
+
+                            <div>
+                                <select  id="filter-style-2" name="filter-style" class="filter-style">
+                                    <option value="no-filter">No Filter</option>
+                                    <option value="grayscale">Grayscale</option>
+                                    <option value="sepia">Sepia</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="invert">Invert</option>
+                                    <option value="contrast">Contrast</option>
+                                    <option value="brightness">Brightness</option>
+                                    <option value="saturate">Saturate</option>
+                                    <option value="opacity">Opacity</option>
+                                </select>
+                                <div>
+                                    <input id="filter-param-2" class="filter-param" name="filter-param" type="range" min="0" max="100">
+                                </div>
+                            </div>
+                            <div class="preview">
+                                <canvas id="preview-canvas"></canvas>
+                            </div>
+                             
+                        </div>
+                        <div class="save-btn">
+                            <button id="save-btn">SAVE</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="popupBeta.js" charset="utf-8"></script>

@@ -6,11 +6,11 @@
   "version": "1.1",
 
   "icons": { 
-   "128": "Doge.png" 
+   "128": "/img/doge_icon.png" 
   },
 
   "browser_action": {
-    "default_icon": "Doge.png",
+    "default_icon": "/img/doge_icon.png",
     "default_popup": "popup.html"
   },
 

@@ -1,0 +1,48 @@
+body {
+    width: 360px;
+    padding: 0px;
+    margin: 0px;
+    background-color: #ffffff;
+}
+
+.options-2d{
+    display: none;
+}
+
+
+.filter-param{
+    display: none;
+}
+
+.preview{
+    width: 250px;
+}
+.preview canvas{
+    
+    width: 250px;
+}
+
+
+.save-btn {
+    padding: 24px 20px;
+    width: 100%;
+}
+
+.save-btn > button {
+    padding: 2px 8px !important;
+    background-color: #2ab02e;
+    opacity: 0.8;
+    border: none;
+    border-radius: 2px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    font-size: 12px;
+}
+
+.save-btn > button:hover {
+    opacity: 1;
+}
+
+.save-btn > button:focus {
+    outline: 0;
+}
