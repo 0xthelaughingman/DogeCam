@@ -1,7 +1,7 @@
 let AnimatorConfiguration = {
     draw_type: 'no-filter',
     draw_style: null,
-    draw_param: 0
+    draw_param: null
 };
 
 var canvas = document.getElementById("preview-canvas")
@@ -19,7 +19,12 @@ img.onload = function(){
 
 toggle_filter_types(document.getElementById("video-ops").value)
 
-//  @value: the  #video-ops element value
+/*
+    The starting function for the Visibility state control. Cascades down to every unit that needs visiblity control.
+    From Filter-Options(dropdown) ->Filter-Styles(dropdowns) ->Filter-Params(sliders)
+
+    @value: the  #video-ops element value
+*/
 function toggle_filter_types(value){
     if(value==="2d-filter"){
         document.getElementById("options-2d").style.display = "block"
@@ -30,8 +35,11 @@ function toggle_filter_types(value){
     }
 }
 
-//  @element:   The .filter-style element node
-//  @value  :   The value for the slider element if any
+/*
+    Toggles current slider's visibility & attaches onchange listener.
+    @element:   The .filter-style element node
+    @value  :   The value for the slider element if any
+*/
 function toggle_current_slider(element, value){
     var child_slider = (element.parentNode).getElementsByClassName("filter-param")[0]
     //  console.log(child_slider)
@@ -47,13 +55,9 @@ function toggle_current_slider(element, value){
     }
 }
 
-
-document.getElementById("video-ops").addEventListener( "change", function(){
-    clear_style_state()
-    toggle_filter_types(this.value)
-    get_popup_state()
-})
-
+/*
+    Iterates through all style dropdowns and their sliders, toggling visibility and attaching onchange listeners.
+*/
 function toggle_all_sliders(){
     var list_selects = document.getElementsByName("filter-style")
     var elementsArray = [...list_selects];
@@ -68,6 +72,16 @@ function toggle_all_sliders(){
     
 }
 
+
+document.getElementById("video-ops").addEventListener( "change", function(){
+    clear_style_state()
+    toggle_filter_types(this.value)
+    get_popup_state()
+})
+
+/*
+    Function to clear selected styles when the user switches to a different Type.
+*/
 function clear_style_state(){
     var list_selects = document.getElementsByName("filter-style")
     var elementsArray = [...list_selects];
@@ -80,7 +94,7 @@ function clear_style_state(){
 
 function get_popup_state(){
     var draw_type = document.getElementById("video-ops").value
-    console.log("Video Filter Value: ", draw_type)
+    //  console.log("Video Filter Value: ", draw_type)
 
     if(draw_type==="2d-filter"){
         read_2dFilter_state()
@@ -138,7 +152,46 @@ function storage_read(){
 }
 
 
+/*
+    Object to Mock config being read from Chrome...
+*/
+let TestConfig = {
+    draw_param: ["72", "69"],
+    draw_style: ["grayscale", "sepia"],
+    draw_type: "2d-filter"
+}
 
+/*
+    Function to read last saved Config, if any, and set the form accordingly.
+*/
+function set_popup(Config){
+    var options = document.getElementById("video-ops")
+    
+    //  Config ALWAYS has to have a draw_type!
+    options.value = Config.draw_type
+    set_2dFilter_state(Config.draw_style, Config.draw_param)
+
+    //  Call the cascade visibility toggler!
+    toggle_filter_types(options.value)
+}
+
+function set_2dFilter_state(draw_style, draw_param)
+{   
+    //  Not a 2d-filter config.
+    if(draw_style==null)
+        return
+
+    //  count of style and params go 1:1, and can't exceed the style dropdowns on the popup.
+    for(var i=0; i<draw_style.length; i++){
+        document.getElementsByClassName("filter-style")[i].value = draw_style[i]
+        document.getElementsByClassName("filter-param")[i].value = draw_param[i]
+    }
+}
+
+document.getElementById('read-btn').addEventListener('click', () => {
+    set_popup(TestConfig)
+    console.log("READ", AnimatorConfiguration)
+});
 
 document.getElementById('save-btn').addEventListener('click', () => {
     get_popup_state()
