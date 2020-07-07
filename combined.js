@@ -98,6 +98,8 @@ function utils_json_res(constraints, fallback_constraints)
     catch(error)
     { 
         console.log("utils error", error)
+        max_height = fallback_constraints.height.max
+        max_width = fallback_constraints.width.max
     }
 
     return [ max_width, max_height ]
@@ -204,17 +206,23 @@ function remove_dynamic_elements()
     }
 }
 
-override_getUserMedia()
+override_chrome_getUserMedias()
+
+function override_chrome_getUserMedias()
+{
+    override_webkitGetUserMedia()
+    override_getUserMedia()
+    override_getUserMediaFallback()
+}
 
 function override_getUserMedia()
 {
-    console.log("Overriding")
     let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
-    console.log("can access navigator")
-    navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) { 
+    navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) {
+ 
         return new Promise((resolve, reject) => {
             console.log(
-                "Original Requested Constraints:\n" , 
+                "Original navigator.mediaDevices.getUserMedia Requested Constraints:\n" , 
                 JSON.stringify(constraints)
             )
             originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
@@ -225,27 +233,47 @@ function override_getUserMedia()
     console.log("success override")
 }
 
-override_getUserMediaFallback()
-
 function override_getUserMediaFallback()
 {
-    console.log("overriding fallback")
     let originalGetUserMedia = navigator.getUserMedia;
-    console.log("can access navigator")
+    
     if (navigator.getUserMedia)
     {
+        console.log("overriding getUserMedia fallback")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "Original FALLBACK Requested Constraints:\n",
+                "Original navigator.getUserMedia Requested Constraints:\n",
                 JSON.stringify(constraints)
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };  
+        console.log("getUserMedia success override fallback")
     }
-    console.log("success override fallback")
 }
+
+function override_webkitGetUserMedia()
+{
+    let originalGetUserMedia = navigator.webkitGetUserMedia;
+    if (navigator.getUserMedia)
+    {
+        console.log("overriding webkitGetUserMedia")
+        navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
+            console.log(
+                "webkitGetUserMedia Original FALLBACK Requested Constraints:\n",
+                JSON.stringify(constraints)
+                )
+            originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
+                return resolve(get_canvas_stream_beta(stream, constraints));
+            }, reject);}).then(success).catch(error);   
+        };
+        console.log("webkitGetUserMedia success override fallback")
+    }
+}
+
+
+
 
 function get_canvas_stream_beta(stream, constraints)
 {   
@@ -291,7 +319,7 @@ function get_canvas_stream_beta(stream, constraints)
         //  log new stream's constraints
         console.log(
             "NEW VIDEO META:", 
-            JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities)
+            JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities())
         )
 
         if(constraints.audio)
