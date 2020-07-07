@@ -222,8 +222,8 @@ function override_getUserMedia()
  
         return new Promise((resolve, reject) => {
             console.log(
-                "Original navigator.mediaDevices.getUserMedia Requested Constraints:\n" , 
-                JSON.stringify(constraints)
+                "Original navigator.mediaDevices.getUserMedia Requested Constraints:", 
+                constraints
             )
             originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
             .then(stream => resolve(get_canvas_stream_beta(stream, constraints)))    //  this is where we'd divert the stream to a call that modifies it, before resolving the promise
@@ -242,8 +242,8 @@ function override_getUserMediaFallback()
         console.log("overriding getUserMedia fallback")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "Original navigator.getUserMedia Requested Constraints:\n",
-                JSON.stringify(constraints)
+                "Original navigator.getUserMedia Requested Constraints:",
+                constraints
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
@@ -261,8 +261,8 @@ function override_webkitGetUserMedia()
         console.log("overriding webkitGetUserMedia")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "webkitGetUserMedia Original FALLBACK Requested Constraints:\n",
-                JSON.stringify(constraints)
+                "webkitGetUserMedia Original FALLBACK Requested Constraints:",
+                constraints
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
@@ -298,7 +298,7 @@ function get_canvas_stream_beta(stream, constraints)
         var original_constraints = stream.getVideoTracks()[0].getCapabilities()
         console.log(
             "ORIG VIDEO META:",
-            JSON.stringify(original_constraints)
+            original_constraints
         )
 
         //  Adapt the canvas to new contraints, remove previous artifacts
@@ -319,7 +319,7 @@ function get_canvas_stream_beta(stream, constraints)
         //  log new stream's constraints
         console.log(
             "NEW VIDEO META:", 
-            JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities())
+            stream_new.getVideoTracks()[0].getCapabilities()
         )
 
         if(constraints.audio)
@@ -327,7 +327,7 @@ function get_canvas_stream_beta(stream, constraints)
             stream_new.addTrack(stream.getAudioTracks()[0]);
             console.log(
                 "AUDIO META:", 
-                JSON.stringify(stream_new.getAudioTracks()[0].getCapabilities())
+                stream_new.getAudioTracks()[0].getCapabilities()
             )
         }
         Animator.video_on = true; // audioTimer's loop condition.
@@ -342,7 +342,7 @@ function get_canvas_stream_beta(stream, constraints)
         console.log("Audio Only")
         console.log(
             "AUDIO META:", 
-            JSON.stringify(stream.getAudioTracks()[0].getCapabilities())
+            stream.getAudioTracks()[0].getCapabilities()
         )
         return stream
     }
