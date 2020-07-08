@@ -1,25 +1,29 @@
 body {
     width: 360px;
-    padding: 0px;
+    padding: 10px;
     margin: 0px;
     background-color: #ffffff;
 }
 
 .options-2d{
     display: none;
+    padding: 10px;
 }
 
+.filter-row{
+    padding: 5px
+}
 
 .filter-param{
     display: none;
 }
 
 .preview{
-    width: 250px;
+    width: 100%;
+    
 }
 .preview canvas{
-    
-    width: 250px;
+    width: 200px;
 }
 
 

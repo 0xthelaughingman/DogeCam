@@ -1,14 +1,14 @@
-let AnimatorConfiguration = {
+let DogeCamConfiguration = {
     draw_type: 'no-filter',
     draw_style: null,
-    draw_param: null
+    draw_param: null,
 };
 
 var canvas = document.getElementById("preview-canvas")
 var img = new Image()
 img.src = 'img/doge_preview2.jpg';
 img.onload = function(){
-    canvas.getContext('2d').drawImage(img, 0, 0);
+    draw_canvas()
 }
 
 /*
@@ -65,6 +65,7 @@ function toggle_all_sliders(){
     elementsArray.forEach(element => {
         element.onchange = function(){
             toggle_current_slider(element)
+            get_popup_state()
         }
         toggle_current_slider(element)
 
@@ -100,11 +101,12 @@ function get_popup_state(){
         read_2dFilter_state()
     }
     else{
-        AnimatorConfiguration.draw_type = draw_type
-        AnimatorConfiguration.draw_style = null
-        AnimatorConfiguration.draw_param = null
+        DogeCamConfiguration.draw_type = draw_type
+        DogeCamConfiguration.draw_style = null
+        DogeCamConfiguration.draw_param = null
     }
-    console.log(AnimatorConfiguration)
+    console.log(DogeCamConfiguration)
+    draw_canvas()
 }
 
 
@@ -128,14 +130,14 @@ function read_2dFilter_state(){
     });
     //  Incase user keeps all 2D-Filters as no-filters too...
     if(styles.length==0){
-        AnimatorConfiguration.draw_type = 'no-filter'
-        AnimatorConfiguration.draw_style = null
-        AnimatorConfiguration.draw_param = null
+        DogeCamConfiguration.draw_type = 'no-filter'
+        DogeCamConfiguration.draw_style = null
+        DogeCamConfiguration.draw_param = null
     }
     else{
-        AnimatorConfiguration.draw_type = '2d-filter'
-        AnimatorConfiguration.draw_style = styles
-        AnimatorConfiguration.draw_param = params
+        DogeCamConfiguration.draw_type = '2d-filter'
+        DogeCamConfiguration.draw_style = styles
+        DogeCamConfiguration.draw_param = params
     }
 }
 
@@ -175,8 +177,7 @@ function set_popup(Config){
     toggle_filter_types(options.value)
 }
 
-function set_2dFilter_state(draw_style, draw_param)
-{   
+function set_2dFilter_state(draw_style, draw_param){   
     //  Not a 2d-filter config.
     if(draw_style==null)
         return
@@ -188,12 +189,33 @@ function set_2dFilter_state(draw_style, draw_param)
     }
 }
 
+
+function draw_canvas(){
+    //  clear previous buffer.
+    console.log("drawing")
+    canvas.getContext('2d').fillRect(0,0, canvas.width, canvas.height)
+
+    let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
+    let x = (canvas.width - img.width * ratio) / 2;
+    let y = (canvas.height - img.height * ratio) / 2;
+    
+    //  Draw Pre-Filter incase no-filters selected.
+    //  THIS IS A MOCK. Need the filter string function for actual filter creation...
+    if(DogeCamConfiguration.draw_param){
+        canvas.getContext('2d').filter = "opacity(" + DogeCamConfiguration.draw_param[0] +"%)"
+    }
+    else{
+        canvas.getContext('2d').filter = "none"
+    }
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, x, y, img.width * ratio, img.height * ratio);
+}
+
 document.getElementById('read-btn').addEventListener('click', () => {
     set_popup(TestConfig)
-    console.log("READ", AnimatorConfiguration)
+    console.log("READ", DogeCamConfiguration)
 });
 
 document.getElementById('save-btn').addEventListener('click', () => {
     get_popup_state()
-    console.log("SAVED", AnimatorConfiguration)
+    console.log("SAVED", DogeCamConfiguration)
 });
