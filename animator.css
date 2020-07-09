@@ -81,11 +81,11 @@ body {
 .range-input {
     width: 300px;
     padding: 8px 20px !important;
-    border: 1px solid  #9650ff;
+    border: 1px solid  #9650ff00;
     border-radius: 2px;
 }
 
-.range-input > input[type="text"] {
+.range-input input[type="text"] {
     border: none;
     border-radius: 2px;
     text-align: center;
@@ -110,7 +110,7 @@ body {
     
 }
 
-.range-input-slider > input[type="range"] {
+.range-input-slider input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
     height: 8px;
@@ -122,11 +122,11 @@ body {
     border-radius: 2px;
 }
 
-.range-input-slider > input[type="range"]:hover {
+.range-input-slider input[type="range"]:hover {
     opacity: 1;
 }
 
-.range-input-slider > input[type="range"]::-webkit-slider-thumb {
+.range-input-slider input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 12px;
@@ -136,7 +136,7 @@ body {
     border-radius: 2px;
 }
 
-.range-input-slider > input[type="range"]::-moz-range-thumb {
+.range-input-slider input[type="range"]::-moz-range-thumb {
     width: 25px;
     height: 25px;
     background: #4CAF50;
@@ -165,4 +165,17 @@ body {
 
 .save-btn > button:focus {
     outline: 0;
+}
+
+.range-input > div.visible {
+    visibility: visible;
+}
+
+.range-input > div.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.range-input.active {
+    border: 1px solid  #9650ff;
 }
