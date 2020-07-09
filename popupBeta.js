@@ -27,11 +27,15 @@ toggle_filter_types(document.getElementById("video-ops").value)
 */
 function toggle_filter_types(value){
     if(value==="2d-filter"){
-        document.getElementById("options-2d").style.display = "block"
+        //  document.getElementById("options-2d").style.display = "block"
+        $(".options-2d").slideDown()
+
         toggle_all_sliders()
     }
     else{
-        document.getElementById("options-2d").style.display = "none"
+        //  document.getElementById("options-2d").style.display = "none"
+        $(".options-2d").slideUp()
+
     }
 }
 
@@ -44,10 +48,13 @@ function toggle_current_slider(element, value){
     var child_slider = (element.parentNode).getElementsByClassName("filter-param")[0]
     //  console.log(child_slider)
     if(element.value==="no-filter"){
-        child_slider.style.display="none";
+        //  child_slider.style.display="none";
+        child_slider.value = 50
+        $(element.parentNode).find( ".filter-param" ).slideUp()
     }
     else{
-        child_slider.style.display="block";
+        //  child_slider.style.display="block";
+        $(element.parentNode).find( ".filter-param" ).slideDown()
         get_popup_state()
     }
     child_slider.onchange = function(){
