@@ -50,11 +50,11 @@ function toggle_current_slider(element, value){
     if(element.value==="no-filter"){
         //  child_slider.style.display="none";
         child_slider.value = 50
-        $(element.parentNode).find( ".filter-param" ).slideUp()
+        $(child_slider).slideUp()
     }
     else{
         //  child_slider.style.display="block";
-        $(element.parentNode).find( ".filter-param" ).slideDown()
+        $(child_slider).slideDown()
         get_popup_state()
     }
     child_slider.onchange = function(){
