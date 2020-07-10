@@ -39,9 +39,12 @@ let Animator = {
     net: null,
     tfjs_draw_counter: 0,
     video_on: false,
-    draw_type: "grayscale",     //  This should have a function defined that's called in get_canvas_stream that reads from the Extension's persistent data,
-    draw_param: null,           //  which the user updates/selects.
-                                //  Current supported values : "grayscale", "tfjs-pixel", "blur", "sepia"
+
+    draw_type: null,    //  These are set from the Event listener. Check current supported styles/types/strings in popup.js/.html
+    draw_param: null,
+    draw_style: null,        
+    draw_string: null,
+
     limit_tfjs: tfjs_240p,
     logging: false,
     log: (message) => {
@@ -62,6 +65,9 @@ document.addEventListener('config-update', function (data) {
     console.log('received', data.detail);
     Animator.draw_type = data.detail.draw_type
     Animator.draw_param = data.detail.draw_param
+    Animator.draw_style = data.detail.draw_style
+    Animator.draw_string = data.detail.draw_string
+    //  console.log("Current Animator:", Animator)
     resize_reset_update()
 });
 
@@ -386,68 +392,20 @@ function nextVideoFrame()
 */
 function drawCanvas(canvas, img, draw_type) 
 {
-    switch(draw_type)
-    {   
-        case "no-filter":
-            canvas.getContext('2d').filter="none"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
+    if(Animator.draw_type==="tfjs-pixel"){
+        console.log("drawing tfjs" , Animator.tfjs_draw_counter)
+        Animator.tfjs_draw_counter++
+        //  Draw first to feed canvas
+        var feed = document.getElementById("tfjs_feed")
+        tensor_draw_pixel(feed, img)
 
-        case "grayscale":
-            canvas.getContext('2d').filter="grayscale(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "blur":
-            canvas.getContext('2d').filter="blur(40px)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "sepia":
-            canvas.getContext('2d').filter="sepia(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "invert":
-            canvas.getContext('2d').filter="invert(100)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "brightness":
-            canvas.getContext('2d').filter="brightness(150)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "contrast":
-            canvas.getContext('2d').filter="contrast(200)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "opacity":
-            canvas.getContext('2d').filter="opacity(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "saturate":
-            canvas.getContext('2d').filter="saturate(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "combined":
-            canvas.getContext('2d').filter="contrast(175) brightness(100)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "tfjs-pixel":
-            console.log("drawing tfjs" , Animator.tfjs_draw_counter)
-            Animator.tfjs_draw_counter++
-            //  Draw first to feed canvas
-            var feed = document.getElementById("tfjs_feed")
-            tensor_draw_pixel(feed, img)
-
-            //  Scale and draw to primary canvas
-            scale_draw(canvas, feed)
-            break
+        //  Scale and draw to primary canvas
+        scale_draw(canvas, feed)
+    }
+    else{
+        //  console.log("drawing 2d")
+        canvas.getContext('2d').filter=Animator.draw_string
+        canvas.getContext('2d').drawImage(img, 0, 0)
     }
 }
 

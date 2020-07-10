@@ -2,11 +2,12 @@ let DogeCamConfiguration = {
     draw_type: 'no-filter',
     draw_style: null,
     draw_param: null,
+    draw_string: null,
 };
 
 var canvas = document.getElementById("preview-canvas")
 var img = new Image()
-img.src = 'img/doge_preview2.jpg';
+img.src = 'img/doge_preview.jpg';
 img.onload = function(){
     draw_canvas()
 }
@@ -15,9 +16,14 @@ img.onload = function(){
     Read previous storage state here
 */
 
+storage_read()
 
 
-toggle_filter_types(document.getElementById("video-ops").value)
+/*
+
+------------------------------------FORM STATE FUNCTIONS BEGIN-------------------------------------------
+
+*/
 
 /*
     The starting function for the Visibility state control. Cascades down to every unit that needs visiblity control.
@@ -35,7 +41,6 @@ function toggle_filter_types(value){
     else{
         //  document.getElementById("options-2d").style.display = "none"
         $(".options-2d").slideUp()
-
     }
 }
 
@@ -75,9 +80,7 @@ function toggle_all_sliders(){
             get_popup_state()
         }
         toggle_current_slider(element)
-
     });
-    
 }
 
 
@@ -112,6 +115,7 @@ function get_popup_state(){
         DogeCamConfiguration.draw_style = null
         DogeCamConfiguration.draw_param = null
     }
+    DogeCamConfiguration.draw_string = make_draw_string(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
     console.log(DogeCamConfiguration)
     draw_canvas()
 }
@@ -133,7 +137,6 @@ function read_2dFilter_state(){
             styles.push(cur_style)
             params.push(cur_param)
         }
-
     });
     //  Incase user keeps all 2D-Filters as no-filters too...
     if(styles.length==0){
@@ -148,19 +151,6 @@ function read_2dFilter_state(){
     }
 }
 
-function storage_write(draw_type, draw_style, draw_param){
-    chrome.storage.sync.set({'draw_type': draw_type, 'draw_style': draw_style, 'draw_param': draw_param}, function() {
-        console.log('Settings saved');
-    });
-}
-
-function storage_read(){
-    chrome.storage.sync.get(['draw_type','draw_style', 'draw_param'], function(items) {
-        console.log('Settings retrieved', items);
-    }); 
-}
-
-
 /*
     Object to Mock config being read from Chrome...
 */
@@ -173,12 +163,12 @@ let TestConfig = {
 /*
     Function to read last saved Config, if any, and set the form accordingly.
 */
-function set_popup(Config){
+function set_popup(){
     var options = document.getElementById("video-ops")
     
     //  Config ALWAYS has to have a draw_type!
-    options.value = Config.draw_type
-    set_2dFilter_state(Config.draw_style, Config.draw_param)
+    options.value = DogeCamConfiguration.draw_type
+    set_2dFilter_state(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
 
     //  Call the cascade visibility toggler!
     toggle_filter_types(options.value)
@@ -206,23 +196,87 @@ function draw_canvas(){
     let x = (canvas.width - img.width * ratio) / 2;
     let y = (canvas.height - img.height * ratio) / 2;
     
+    /*
     //  Draw Pre-Filter incase no-filters selected.
     //  THIS IS A MOCK. Need the filter string function for actual filter creation...
     if(DogeCamConfiguration.draw_param){
-        canvas.getContext('2d').filter = "opacity(" + DogeCamConfiguration.draw_param[0] +"%)"
+        canvas.getContext('2d').filter = "grayscale(" + DogeCamConfiguration.draw_param[0] +"%)"
     }
     else{
         canvas.getContext('2d').filter = "none"
     }
+    */
+
+    canvas.getContext('2d').filter = DogeCamConfiguration.draw_string
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, x, y, img.width * ratio, img.height * ratio);
 }
 
+/*
+
+------------------------------------FORM STATE FUNCTIONS END-------------------------------------------
+
+*/
+
+/*
+    Util function that builds and returns the Canvas Filter string.
+*/
+function make_draw_string(draw_style, draw_param){
+
+    var string = ""
+    
+    if(draw_style==null){
+        return "none"
+    }
+
+    var opt = null
+    var param = null
+
+    for(var i=0; i<draw_style.length; i++){
+        if(draw_style[i]==="blur"){
+            opt = "px"
+        }
+        else{
+            opt = "%"
+        }
+        
+        //  Logic for brightness/contrast, param = val * 2, as 100 means normal, making 50 the central/normal value.
+        if(draw_style[i]==="brightness" || draw_style[i]==="contrast"){
+            param = draw_param[i]*2
+        }
+        else{
+            param = draw_param[i]
+        }
+        console.log(string)
+        string = string + " " + draw_style[i] + "(" + param + opt +")"
+    }
+    return string
+}
+
+
+
+function storage_write(){
+    chrome.storage.sync.set({'DogeCamConfiguration': DogeCamConfiguration},function() {
+            console.log('Settings saved');
+            console.log("Wrote to Store:", DogeCamConfiguration)
+        });
+}
+
+function storage_read(){
+    chrome.storage.sync.get(['DogeCamConfiguration'], function(item) {
+        //  console.log('Settings retrieved', item);
+        DogeCamConfiguration = item.DogeCamConfiguration
+        console.log("Updated Config From Store:", DogeCamConfiguration)
+        set_popup()
+    }); 
+}
+
+
 document.getElementById('read-btn').addEventListener('click', () => {
-    set_popup(TestConfig)
-    console.log("READ", DogeCamConfiguration)
+    console.log("Read button")
+    storage_read()
 });
 
 document.getElementById('save-btn').addEventListener('click', () => {
     get_popup_state()
-    console.log("SAVED", DogeCamConfiguration)
+    storage_write()
 });
