@@ -108,7 +108,7 @@ function get_popup_state(){
     //  console.log("Video Filter Value: ", draw_type)
 
     if(draw_type==="2d-filter"){
-        read_2dFilter_state()
+        read_2DFilter_state()
     }
     else{
         DogeCamConfiguration.draw_type = draw_type
@@ -120,9 +120,10 @@ function get_popup_state(){
     draw_canvas()
 }
 
-
-// Reads and sets AnimatorConfig if 2D-Filter selected.
-function read_2dFilter_state(){
+/*
+    Reads  and sets DogeCamConfiguration if 2D-Filter selected.
+*/
+function read_2DFilter_state(){
     var list_selects = document.getElementsByName("filter-style")
     var elementsArray = [...list_selects];
     var styles = []
@@ -152,15 +153,6 @@ function read_2dFilter_state(){
 }
 
 /*
-    Object to Mock config being read from Chrome...
-*/
-let TestConfig = {
-    draw_param: ["72", "69"],
-    draw_style: ["grayscale", "sepia"],
-    draw_type: "2d-filter"
-}
-
-/*
     Function to read last saved Config, if any, and set the form accordingly.
 */
 function set_popup(){
@@ -168,13 +160,13 @@ function set_popup(){
     
     //  Config ALWAYS has to have a draw_type!
     options.value = DogeCamConfiguration.draw_type
-    set_2dFilter_state(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
+    set_2DFilter_state(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
 
     //  Call the cascade visibility toggler!
     toggle_filter_types(options.value)
 }
 
-function set_2dFilter_state(draw_style, draw_param){   
+function set_2DFilter_state(draw_style, draw_param){   
     //  Not a 2d-filter config.
     if(draw_style==null)
         return
@@ -195,17 +187,6 @@ function draw_canvas(){
     let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
     let x = (canvas.width - img.width * ratio) / 2;
     let y = (canvas.height - img.height * ratio) / 2;
-    
-    /*
-    //  Draw Pre-Filter incase no-filters selected.
-    //  THIS IS A MOCK. Need the filter string function for actual filter creation...
-    if(DogeCamConfiguration.draw_param){
-        canvas.getContext('2d').filter = "grayscale(" + DogeCamConfiguration.draw_param[0] +"%)"
-    }
-    else{
-        canvas.getContext('2d').filter = "none"
-    }
-    */
 
     canvas.getContext('2d').filter = DogeCamConfiguration.draw_string
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, x, y, img.width * ratio, img.height * ratio);
