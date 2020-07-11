@@ -244,6 +244,12 @@ function storage_write(){
 function storage_read(){
     chrome.storage.sync.get(['DogeCamConfiguration'], function(item) {
         //  console.log('Settings retrieved', item);
+
+        //  Don't override the default declaration if not previously stored
+        if( item.DogeCamConfiguration == null || typeof item.DogeCamConfiguration === "undefined") {
+            return
+        }
+
         DogeCamConfiguration = item.DogeCamConfiguration
         console.log("Updated Config From Store:", DogeCamConfiguration)
         set_popup()
