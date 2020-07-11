@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DogeCam Config</title>
+        <link href="popupBeta.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="page-title">
+            <h1>DogeCam - Configuration</h1>
+        </div>
+                <div class="container filter value">
+                        <select  id="video-ops" name="video-ops">
+                            <option value="no-filter">Select a Video Filter</option>
+                            <option value="2d-filter">2D Filter</option>
+                            <option value="tfjs-pixel">TFJS Pixel</option>
+                        </select>
+
+                        <div class="options-2d" id="options-2d">
+                            <div class="filter-row">
+                                <select  id="filter-style-1" name="filter-style" class="filter-style">
+                                    <option value="no-filter">No Filter</option>
+                                    <option value="grayscale">Grayscale</option>
+                                    <option value="sepia">Sepia</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="invert">Invert</option>
+                                    <option value="contrast">Contrast</option>
+                                    <option value="brightness">Brightness</option>
+                                    <option value="saturate">Saturate</option>
+                                    <option value="opacity">Opacity</option>
+                                    
+                                </select>
+                                <div>
+                                    <input id="filter-param-1" class="filter-param" name="filter-param" type="range" min="0" max="100">
+                                </div>
+                            </div>
+                            
+
+                            <div class="filter-row">
+                                <select  id="filter-style-2" name="filter-style" class="filter-style">
+                                    <option value="no-filter">No Filter</option>
+                                    <option value="grayscale">Grayscale</option>
+                                    <option value="sepia">Sepia</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="invert">Invert</option>
+                                    <option value="contrast">Contrast</option>
+                                    <option value="brightness">Brightness</option>
+                                    <option value="saturate">Saturate</option>
+                                    <option value="opacity">Opacity</option>
+                                </select>
+                                <div>
+                                    <input id="filter-param-2" class="filter-param" name="filter-param" type="range" min="0" max="100">
+                                </div>
+                            </div>
+                            <div class="preview">
+                                <canvas id="preview-canvas"></canvas>
+                            </div>
+                             
+                        </div>
+                        <div class="container btn-panel">
+                            <button id="save-btn">SAVE</button>
+                            <!--    Only For Mock Testing Chrome Storage! 
+                                <button id="read-btn">READ</button>
+                            -->
+                        </div>
+                </div>
+        </div>
+    </body>
+</html>
+<script src="jquery-3.5.1.min.js" charset="utf-8"></script>
+<script src="popupBeta.js" charset="utf-8"></script>

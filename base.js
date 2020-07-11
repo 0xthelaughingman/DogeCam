@@ -12,9 +12,9 @@ s.onload = function(){
  * Get data and dispatch message which our render.js/combined.js receives.
  */
 function storage_get_params(){
-    chrome.storage.sync.get(['draw_type', 'draw_param'], function(items) {
-        var data = {draw_type: items.draw_type, draw_param: items.draw_param}
-        document.dispatchEvent(new CustomEvent('config-update', { detail: data }));
+    chrome.storage.sync.get(['DogeCamConfiguration'], function(items) {
+        var DogeCamConfiguration = items.DogeCamConfiguration
+        document.dispatchEvent(new CustomEvent('config-update', { detail: DogeCamConfiguration }));
     })    
 }
 
@@ -24,7 +24,7 @@ function storage_get_params(){
  */
 chrome.storage.onChanged.addListener(async function(changes, namespace) {
     for(key in changes) {
-        if(key === 'draw_type' || key === 'draw_param') {
+        if(key === 'DogeCamConfiguration') {
             storage_get_params()
             return
         }

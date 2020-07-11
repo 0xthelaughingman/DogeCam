@@ -39,9 +39,12 @@ let Animator = {
     net: null,
     tfjs_draw_counter: 0,
     video_on: false,
-    draw_type: "grayscale",     //  This should have a function defined that's called in get_canvas_stream that reads from the Extension's persistent data,
-    draw_param: null,           //  which the user updates/selects.
-                                //  Current supported values : "grayscale", "tfjs-pixel", "blur", "sepia"
+
+    draw_type: null,    //  These are set from the Event listener. Check current supported styles/types/strings in popup.js/.html
+    draw_param: null,
+    draw_style: null,        
+    draw_string: null,
+
     limit_tfjs: tfjs_240p,
     logging: false,
     log: (message) => {
@@ -62,6 +65,9 @@ document.addEventListener('config-update', function (data) {
     console.log('received', data.detail);
     Animator.draw_type = data.detail.draw_type
     Animator.draw_param = data.detail.draw_param
+    Animator.draw_style = data.detail.draw_style
+    Animator.draw_string = data.detail.draw_string
+    //  console.log("Current Animator:", Animator)
     resize_reset_update()
 });
 
@@ -98,6 +104,8 @@ function utils_json_res(constraints, fallback_constraints)
     catch(error)
     { 
         console.log("utils error", error)
+        max_height = fallback_constraints.height.max
+        max_width = fallback_constraints.width.max
     }
 
     return [ max_width, max_height ]
@@ -204,18 +212,24 @@ function remove_dynamic_elements()
     }
 }
 
-override_getUserMedia()
+override_chrome_getUserMedias()
+
+function override_chrome_getUserMedias()
+{
+    override_webkitGetUserMedia()
+    override_getUserMedia()
+    override_getUserMediaFallback()
+}
 
 function override_getUserMedia()
 {
-    console.log("Overriding")
     let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
-    console.log("can access navigator")
-    navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) { 
+    navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) {
+ 
         return new Promise((resolve, reject) => {
             console.log(
-                "Original Requested Constraints:\n" , 
-                JSON.stringify(constraints)
+                "Original navigator.mediaDevices.getUserMedia Requested Constraints:", 
+                constraints
             )
             originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
             .then(stream => resolve(get_canvas_stream_beta(stream, constraints)))    //  this is where we'd divert the stream to a call that modifies it, before resolving the promise
@@ -225,27 +239,47 @@ function override_getUserMedia()
     console.log("success override")
 }
 
-override_getUserMediaFallback()
-
 function override_getUserMediaFallback()
 {
-    console.log("overriding fallback")
     let originalGetUserMedia = navigator.getUserMedia;
-    console.log("can access navigator")
+    
     if (navigator.getUserMedia)
     {
+        console.log("overriding getUserMedia fallback")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "Original FALLBACK Requested Constraints:\n",
-                JSON.stringify(constraints)
+                "Original navigator.getUserMedia Requested Constraints:",
+                constraints
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };  
+        console.log("getUserMedia success override fallback")
     }
-    console.log("success override fallback")
 }
+
+function override_webkitGetUserMedia()
+{
+    let originalGetUserMedia = navigator.webkitGetUserMedia;
+    if (navigator.getUserMedia)
+    {
+        console.log("overriding webkitGetUserMedia")
+        navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
+            console.log(
+                "webkitGetUserMedia Original FALLBACK Requested Constraints:",
+                constraints
+                )
+            originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
+                return resolve(get_canvas_stream_beta(stream, constraints));
+            }, reject);}).then(success).catch(error);   
+        };
+        console.log("webkitGetUserMedia success override fallback")
+    }
+}
+
+
+
 
 function get_canvas_stream_beta(stream, constraints)
 {   
@@ -270,7 +304,7 @@ function get_canvas_stream_beta(stream, constraints)
         var original_constraints = stream.getVideoTracks()[0].getCapabilities()
         console.log(
             "ORIG VIDEO META:",
-            JSON.stringify(original_constraints)
+            original_constraints
         )
 
         //  Adapt the canvas to new contraints, remove previous artifacts
@@ -291,7 +325,7 @@ function get_canvas_stream_beta(stream, constraints)
         //  log new stream's constraints
         console.log(
             "NEW VIDEO META:", 
-            JSON.stringify(stream_new.getVideoTracks()[0].getCapabilities)
+            stream_new.getVideoTracks()[0].getCapabilities()
         )
 
         if(constraints.audio)
@@ -299,7 +333,7 @@ function get_canvas_stream_beta(stream, constraints)
             stream_new.addTrack(stream.getAudioTracks()[0]);
             console.log(
                 "AUDIO META:", 
-                JSON.stringify(stream_new.getAudioTracks()[0].getCapabilities())
+                stream_new.getAudioTracks()[0].getCapabilities()
             )
         }
         Animator.video_on = true; // audioTimer's loop condition.
@@ -314,7 +348,7 @@ function get_canvas_stream_beta(stream, constraints)
         console.log("Audio Only")
         console.log(
             "AUDIO META:", 
-            JSON.stringify(stream.getAudioTracks()[0].getCapabilities())
+            stream.getAudioTracks()[0].getCapabilities()
         )
         return stream
     }
@@ -358,68 +392,20 @@ function nextVideoFrame()
 */
 function drawCanvas(canvas, img, draw_type) 
 {
-    switch(draw_type)
-    {   
-        case "no-filter":
-            canvas.getContext('2d').filter="none"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
+    if(Animator.draw_type==="tfjs-pixel"){
+        console.log("drawing tfjs" , Animator.tfjs_draw_counter)
+        Animator.tfjs_draw_counter++
+        //  Draw first to feed canvas
+        var feed = document.getElementById("tfjs_feed")
+        tensor_draw_pixel(feed, img)
 
-        case "grayscale":
-            canvas.getContext('2d').filter="grayscale(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "blur":
-            canvas.getContext('2d').filter="blur(40px)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "sepia":
-            canvas.getContext('2d').filter="sepia(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "invert":
-            canvas.getContext('2d').filter="invert(100)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "brightness":
-            canvas.getContext('2d').filter="brightness(150)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "contrast":
-            canvas.getContext('2d').filter="contrast(200)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "opacity":
-            canvas.getContext('2d').filter="opacity(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "saturate":
-            canvas.getContext('2d').filter="saturate(50)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "combined":
-            canvas.getContext('2d').filter="contrast(175) brightness(100)"
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            break
-
-        case "tfjs-pixel":
-            console.log("drawing tfjs" , Animator.tfjs_draw_counter)
-            Animator.tfjs_draw_counter++
-            //  Draw first to feed canvas
-            var feed = document.getElementById("tfjs_feed")
-            tensor_draw_pixel(feed, img)
-
-            //  Scale and draw to primary canvas
-            scale_draw(canvas, feed)
-            break
+        //  Scale and draw to primary canvas
+        scale_draw(canvas, feed)
+    }
+    else{
+        //  console.log("drawing 2d")
+        canvas.getContext('2d').filter=Animator.draw_string
+        canvas.getContext('2d').drawImage(img, 0, 0)
     }
 }
 
