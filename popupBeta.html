@@ -5,13 +5,12 @@
         <link href="popupBeta.css" rel="stylesheet"/>
     </head>
     <body>
-        <p class="heading">DogeCam Config</p>
-        <div>
-            <div>
-                <div>
-                    <label for="video-ops">Video Filter Type:</label>
+        <div class="page-title">
+            <h1>DogeCam - Configuration</h1>
+        </div>
+                <div class="container filter value">
                         <select  id="video-ops" name="video-ops">
-                            <option value="no-filter">No Filter</option>
+                            <option value="no-filter">Select a Video Filter</option>
                             <option value="2d-filter">2D Filter</option>
                             <option value="tfjs-pixel">TFJS Pixel</option>
                         </select>
@@ -57,12 +56,13 @@
                             </div>
                              
                         </div>
-                        <div class="save-btn">
+                        <div class="container btn-panel">
                             <button id="save-btn">SAVE</button>
-                            <button id="read-btn">READ</button>
+                            <!--    Only For Mock Testing Chrome Storage! 
+                                <button id="read-btn">READ</button>
+                            -->
                         </div>
                 </div>
-            </div>
         </div>
     </body>
 </html>

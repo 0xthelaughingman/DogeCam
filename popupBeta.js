@@ -250,11 +250,12 @@ function storage_read(){
     }); 
 }
 
-
+/* Only for Mock testing
 document.getElementById('read-btn').addEventListener('click', () => {
     console.log("Read button")
     storage_read()
 });
+*/
 
 document.getElementById('save-btn').addEventListener('click', () => {
     get_popup_state()
