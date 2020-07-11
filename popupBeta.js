@@ -62,7 +62,7 @@ function toggle_current_slider(element, value){
         $(child_slider).slideDown()
         get_popup_state()
     }
-    child_slider.onchange = function(){
+    child_slider.oninput = function(){
         get_popup_state()
     }
 }
@@ -116,7 +116,7 @@ function get_popup_state(){
         DogeCamConfiguration.draw_param = null
     }
     DogeCamConfiguration.draw_string = make_draw_string(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
-    console.log(DogeCamConfiguration)
+    //  console.log(DogeCamConfiguration)
     draw_canvas()
 }
 
@@ -181,7 +181,7 @@ function set_2DFilter_state(draw_style, draw_param){
 
 function draw_canvas(){
     //  clear previous buffer.
-    console.log("drawing")
+    //  console.log("drawing")
     canvas.getContext('2d').fillRect(0,0, canvas.width, canvas.height)
 
     let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
@@ -221,13 +221,12 @@ function make_draw_string(draw_style, draw_param){
         }
         
         //  Logic for brightness/contrast, param = val * 2, as 100 means normal, making 50 the central/normal value.
-        if(draw_style[i]==="brightness" || draw_style[i]==="contrast"){
+        if(draw_style[i]==="brightness" || draw_style[i]==="contrast" || draw_style[i]==="saturate"){
             param = draw_param[i]*2
         }
         else{
             param = draw_param[i]
         }
-        console.log(string)
         string = string + " " + draw_style[i] + "(" + param + opt +")"
     }
     return string
