@@ -1,7 +1,7 @@
 # DogeCam
  A chrome extension to make your video calls Doge-y!
 
- *Do go through:*https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
+ **Do go through**:*https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
 
 
 # Testing Locally:
@@ -23,7 +23,7 @@ Steps to install this project as your chrome extension:
     * To overcome that drawback, we pass the messages on update/onchange from the base.js(content script) to combined.js.
     * base.js and the popup have all the access to chrome APIs.
 
-3. *Microsoft Teams*: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes 
+3. _**Microsoft Teams**_: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes 
     * **[DOESN'T WORK]** _**Removing tfjs/body-pix src from combined.js**_: This allows our script to load up and we can see the override method's logs, but doesn't seem like our script handles the stream hand over at all. Could be an underlying timing issue w.r.t the override?
     
 4. **[HIGH PRIORITY]** _**Override Fails for Teams/JioMeet**_: The getUserMedia overrides fail for Teams/JioMeet at the moment. Both use a variety of plugins and add-on scripts to handle the stream. The same design if adopted by the supported apps, would lead to them not being supported by the extension too!
