@@ -262,7 +262,7 @@ function override_getUserMediaFallback()
 function override_webkitGetUserMedia()
 {
     let originalGetUserMedia = navigator.webkitGetUserMedia;
-    if (navigator.getUserMedia)
+    if (navigator.webkitGetUserMedia)
     {
         console.log("overriding webkitGetUserMedia")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
