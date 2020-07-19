@@ -337,7 +337,7 @@ function get_canvas_stream_beta(stream, constraints)
             )
         }
         Animator.video_on = true; // audioTimer's loop condition.
-        audioTimerLoop(nextVideoFrame, 60)
+        audioTimerLoop(nextVideoFrame, 30)
         //  nextVideoFrame()
         console.log("returning a stream")
         return stream_new
