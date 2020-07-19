@@ -1,7 +1,7 @@
 # DogeCam
  A chrome extension to make your video calls Doge-y!
 
- **Do go through**:*https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
+ **Do go through**: https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
 
 
 # Testing Locally:
@@ -28,3 +28,7 @@ Steps to install this project as your chrome extension:
     
 4. **[HIGH PRIORITY]** _**Override Fails for Teams/JioMeet**_: The getUserMedia overrides fail for Teams/JioMeet at the moment. Both use a variety of plugins and add-on scripts to handle the stream. The same design if adopted by the supported apps, would lead to them not being supported by the extension too!
     * Figure out a way to override the stream handover for either of the 2, assumption is the solution for one should be readily applicable for the other or atmost with minimal tweaks
+
+# TODOs
+
+1. _**Mozilla/FireFox Compatibility**_: Incorporate the compatibility for Mozilla Firefox. Current Assumption: Only the Storage R/W functions would need to be switched dynamicallly based on the browser running the code, everything else should remain consistent across the browsers. The manifest/concepts of content_scripts,etc. all look exactly the same.
