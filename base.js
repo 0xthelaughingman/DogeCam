@@ -14,7 +14,21 @@ s.onload = function(){
 function storage_get_params(){
     browser.storage.sync.get(['DogeCamConfiguration'], function(items) {
         var DogeCamConfiguration = items.DogeCamConfiguration
-        document.dispatchEvent(new CustomEvent('config-update', { detail: DogeCamConfiguration }));
+
+        /*
+            Detect if Firefox, and if so clone the object so that the receiver can have access permissions to it...
+            https://stackoverflow.com/questions/18744224,
+            https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Property_access_denied
+            Detection: https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+        */
+        if(typeof InstallTrigger !== 'undefined'){
+            console.log("is MOZ")
+            var DogeCamConfigurationClone = cloneInto(DogeCamConfiguration, window.document);
+            document.dispatchEvent(new CustomEvent('config-update', { detail: DogeCamConfigurationClone }));
+        }
+        else{
+            document.dispatchEvent(new CustomEvent('config-update', { detail: DogeCamConfiguration }));
+        }
     })    
 }
 
