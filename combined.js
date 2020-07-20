@@ -304,7 +304,7 @@ function get_canvas_stream_beta(stream, constraints)
             Animator.original_stream.getVideoTracks()[0].stop()
 
         Animator.original_stream = stream
-        var original_constraints = stream.getVideoTracks()[0].getCapabilities()
+        var original_constraints = stream.getVideoTracks()[0].getConstraints()
         console.log(
             "ORIG VIDEO META:",
             original_constraints
@@ -328,7 +328,7 @@ function get_canvas_stream_beta(stream, constraints)
         //  log new stream's constraints
         console.log(
             "NEW VIDEO META:", 
-            stream_new.getVideoTracks()[0].getCapabilities()
+            stream_new.getVideoTracks()[0].getConstraints()
         )
 
         if(constraints.audio)
@@ -336,7 +336,7 @@ function get_canvas_stream_beta(stream, constraints)
             stream_new.addTrack(stream.getAudioTracks()[0]);
             console.log(
                 "AUDIO META:", 
-                stream_new.getAudioTracks()[0].getCapabilities()
+                stream_new.getAudioTracks()[0].getConstraints()
             )
         }
         Animator.video_on = true; // audioTimer's loop condition.
@@ -351,7 +351,7 @@ function get_canvas_stream_beta(stream, constraints)
         console.log("Audio Only")
         console.log(
             "AUDIO META:", 
-            stream.getAudioTracks()[0].getCapabilities()
+            stream.getAudioTracks()[0].getConstraints()
         )
         return stream
     }
