@@ -235,14 +235,14 @@ function make_draw_string(draw_style, draw_param){
 
 
 function storage_write(){
-    chrome.storage.sync.set({'DogeCamConfiguration': DogeCamConfiguration},function() {
+    browser.storage.sync.set({'DogeCamConfiguration': DogeCamConfiguration},function() {
             console.log('Settings saved');
             console.log("Wrote to Store:", DogeCamConfiguration)
         });
 }
 
 function storage_read(){
-    chrome.storage.sync.get(['DogeCamConfiguration'], function(item) {
+    browser.storage.sync.get(['DogeCamConfiguration'], function(item) {
         //  console.log('Settings retrieved', item);
 
         //  Don't override the default declaration if not previously stored

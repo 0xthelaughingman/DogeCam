@@ -216,8 +216,11 @@ override_chrome_getUserMedias()
 
 function override_chrome_getUserMedias()
 {
+    console.log("Calling override_webkitGetUserMedia")
     override_webkitGetUserMedia()
+    console.log("Calling override_getUserMedia")
     override_getUserMedia()
+    console.log("override_getUserMediaFallback")
     override_getUserMediaFallback()
 }
 
