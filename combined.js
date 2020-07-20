@@ -291,7 +291,9 @@ function get_canvas_stream_beta(stream, constraints)
     if(constraints.video)
     {   
         //  Check if it's a screen share!
-        if( JSON.stringify(constraints).indexOf("chromeMediaSource") > -1 ) {
+        if( JSON.stringify(constraints).indexOf("chromeMediaSource") > -1 || 
+        // For Firefox
+        JSON.stringify(constraints).indexOf("mediaSource") > -1){
             console.log("Returning Screenshare");
             return stream
         }
@@ -319,7 +321,11 @@ function get_canvas_stream_beta(stream, constraints)
         var video = document.getElementById("invisible_video")
 
         var canvas = document.getElementById("invisible")
+        console.log(canvas)
+        canvas.getContext('2d') //  Firefox fails to capture without first getting context...?
+                                //  https://bugzilla.mozilla.org/show_bug.cgi?id=1572422
         stream_new = canvas.captureStream(30)
+
         Animator.canvas_stream = stream_new  //  Maintain global ref. to the stream
 
         video.srcObject = stream
