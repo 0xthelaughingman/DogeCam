@@ -4,14 +4,21 @@
  **Do go through**: https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
 
 
-# Testing Locally:
+# Testing/Installing Locally:
 
-Steps to install this project as your chrome extension:
-1. Clone or download this project.
-2. Open the Extension Management page by navigating to chrome://extensions.
-3. The Extension Management page can also be opened by clicking on the Chrome menu, hovering over More Tools then selecting Extensions.
-4. Enable Developer Mode by clicking the toggle switch next to Developer mode.
-5. Click the 'LOAD UNPACKED' button and select this directory.
+* Steps to install this project as your **_CHROME_** extension:
+  1. Open the Extension Management page by navigating to chrome://extensions.
+  2. The Extension Management page can also be opened by clicking on the Chrome menu, hovering over More Tools then selecting Extensions.  
+  3. Enable Developer Mode by clicking the toggle switch next to Developer mode.
+  4. Click the 'LOAD UNPACKED' button and select this directory.
+
+* Steps for **_Mozilla FireFox_**:
+  1. Open the Add-ons Management page by navigating to about:addons .
+  2. The Extension Management page can also be opened by clicking on the FireFox menu, and then selecting Add-ons.  
+  3. Click the "Tools for all add-ons" button and click "debug Add-ons", or navigate to about:debugging#/runtime/this-firefox.
+  4. Click the 'LOAD TEMPORARY ADD-ON' button and select the archive/zip of the directory.
+ 
+ **PUBLISHING WARNING**: The manifest required a new key "browser_specific_settings" to support FireFox compatibility and testing, this should ideally be removed on the release branch.
 
 
 # Notes/Known Issues:
