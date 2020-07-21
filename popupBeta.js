@@ -255,15 +255,13 @@ function storage_write(){
 function storage_read(){
     api_base.storage.sync.get(['DogeCamConfiguration'], function(item) {
         //  console.log('Settings retrieved', item);
-
         //  Don't override the default declaration if not previously stored
-        if( item.DogeCamConfiguration == null || typeof item.DogeCamConfiguration === "undefined") {
-            return
+        storage_present = !(item.DogeCamConfiguration == null || typeof item.DogeCamConfiguration === "undefined")
+        if(storage_present) {
+            DogeCamConfiguration = item.DogeCamConfiguration
+            console.log("Updated Config From Store:", DogeCamConfiguration)
+            set_popup()
         }
-
-        DogeCamConfiguration = item.DogeCamConfiguration
-        console.log("Updated Config From Store:", DogeCamConfiguration)
-        set_popup()
     }); 
 }
 

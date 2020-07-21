@@ -325,7 +325,7 @@ function get_canvas_stream_beta(stream, constraints)
         var video = document.getElementById("invisible_video")
 
         var canvas = document.getElementById("invisible")
-        console.log(canvas)
+
         canvas.getContext('2d') //  Firefox fails to capture without first getting context...?
                                 //  https://bugzilla.mozilla.org/show_bug.cgi?id=1572422
         stream_new = canvas.captureStream(30)
