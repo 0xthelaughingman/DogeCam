@@ -67,7 +67,6 @@ document.addEventListener('config-update', function (data) {
     Animator.draw_param = data.detail.draw_param
     Animator.draw_style = data.detail.draw_style
     Animator.draw_string = data.detail.draw_string
-    //  console.log("Current Animator:", Animator)
     resize_reset_update()
 });
 
@@ -94,7 +93,6 @@ function utils_json_res(constraints, fallback_constraints)
                 max_width=res	
         });
 
-        //  console.log("Status by match ", max_width, max_height)
         if(max_height==0 || max_width==0)
         {
             max_height = fallback_constraints.height.max
@@ -411,7 +409,6 @@ function drawCanvas(canvas, img, draw_type)
         //  Draw first to feed canvas
         var feed = document.getElementById("tfjs_feed")
         tensor_draw_pixel(feed, img)
-
         //  Scale and draw to primary canvas
         scale_draw(canvas, feed)
     }
@@ -433,7 +430,6 @@ async function tensor_draw_pixel(canvas, img)
         if (Animator.tfjs_draw_counter==300)
             throw ReferenceError
         const partSegmentation = await Animator.net.segmentMultiPersonParts(img);
-
         // The colored part image is an rgb image with a corresponding color from the
         // rainbow colors for each part at each pixel, and black pixels where there is
         // no part.
@@ -468,7 +464,6 @@ loadPix()
 
 async function loadPix()
 {
-    //   net = await bodyPix.load();
     Animator.net = await bodyPix.load({
     architecture: 'MobileNetV1',
     outputStride: 16,
