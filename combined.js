@@ -214,6 +214,10 @@ function remove_dynamic_elements()
 
 override_chrome_getUserMedias()
 
+/*
+    These should suffice for Firefox too.
+*/
+
 function override_chrome_getUserMedias()
 {
     console.log("Calling override_webkitGetUserMedia")
@@ -402,7 +406,7 @@ function nextVideoFrame()
 function drawCanvas(canvas, img, draw_type) 
 {
     if(Animator.draw_type==="tfjs-pixel"){
-        console.log("drawing tfjs" , Animator.tfjs_draw_counter)
+        //  console.log("drawing tfjs" , Animator.tfjs_draw_counter)
         Animator.tfjs_draw_counter++
         //  Draw first to feed canvas
         var feed = document.getElementById("tfjs_feed")
