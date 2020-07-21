@@ -1,5 +1,3 @@
-let Animator
-
 /*
     Switching the API based on browser.
     Detection: https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
@@ -51,10 +49,7 @@ function storage_get_params(){
  * Listener for changes to the draw_type from the popup!
  */
 api_base.storage.onChanged.addListener(async function(changes, namespace) {
-    for(key in changes) {
-        if(key === 'DogeCamConfiguration') {
-            storage_get_params()
-            return
-        }
+    if(changes.hasOwnProperty('DogeCamConfiguration')){
+        storage_get_params()
     }
 });

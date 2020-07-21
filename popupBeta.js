@@ -247,7 +247,7 @@ function make_draw_string(draw_style, draw_param){
 
 function storage_write(){
     api_base.storage.sync.set({'DogeCamConfiguration': DogeCamConfiguration},function() {
-            console.log('Settings saved');
+            //  console.log('Settings saved');
             console.log("Wrote to Store:", DogeCamConfiguration)
         });
 }
