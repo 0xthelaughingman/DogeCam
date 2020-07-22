@@ -67,7 +67,6 @@ document.addEventListener('config-update', function (data) {
     Animator.draw_param = data.detail.draw_param
     Animator.draw_style = data.detail.draw_style
     Animator.draw_string = data.detail.draw_string
-    //  console.log("Current Animator:", Animator)
     resize_reset_update()
 });
 
@@ -94,7 +93,6 @@ function utils_json_res(constraints, fallback_constraints)
                 max_width=res	
         });
 
-        //  console.log("Status by match ", max_width, max_height)
         if(max_height==0 || max_width==0)
         {
             max_height = fallback_constraints.height.max
@@ -214,10 +212,17 @@ function remove_dynamic_elements()
 
 override_chrome_getUserMedias()
 
+/*
+    These should suffice for Firefox too.
+*/
+
 function override_chrome_getUserMedias()
 {
+    console.log("Calling override_webkitGetUserMedia")
     override_webkitGetUserMedia()
+    console.log("Calling override_getUserMedia")
     override_getUserMedia()
+    console.log("override_getUserMediaFallback")
     override_getUserMediaFallback()
 }
 
@@ -288,7 +293,9 @@ function get_canvas_stream_beta(stream, constraints)
     if(constraints.video)
     {   
         //  Check if it's a screen share!
-        if( JSON.stringify(constraints).indexOf("chromeMediaSource") > -1 ) {
+        if( JSON.stringify(constraints).indexOf("chromeMediaSource") > -1 || 
+        // For Firefox
+        JSON.stringify(constraints).indexOf("mediaSource") > -1){
             console.log("Returning Screenshare");
             return stream
         }
@@ -301,7 +308,7 @@ function get_canvas_stream_beta(stream, constraints)
             Animator.original_stream.getVideoTracks()[0].stop()
 
         Animator.original_stream = stream
-        var original_constraints = stream.getVideoTracks()[0].getCapabilities()
+        var original_constraints = stream.getVideoTracks()[0].getConstraints()
         console.log(
             "ORIG VIDEO META:",
             original_constraints
@@ -316,7 +323,11 @@ function get_canvas_stream_beta(stream, constraints)
         var video = document.getElementById("invisible_video")
 
         var canvas = document.getElementById("invisible")
+
+        canvas.getContext('2d') //  Firefox fails to capture without first getting context...?
+                                //  https://bugzilla.mozilla.org/show_bug.cgi?id=1572422
         stream_new = canvas.captureStream(30)
+
         Animator.canvas_stream = stream_new  //  Maintain global ref. to the stream
 
         video.srcObject = stream
@@ -325,7 +336,7 @@ function get_canvas_stream_beta(stream, constraints)
         //  log new stream's constraints
         console.log(
             "NEW VIDEO META:", 
-            stream_new.getVideoTracks()[0].getCapabilities()
+            stream_new.getVideoTracks()[0].getConstraints()
         )
 
         if(constraints.audio)
@@ -333,7 +344,7 @@ function get_canvas_stream_beta(stream, constraints)
             stream_new.addTrack(stream.getAudioTracks()[0]);
             console.log(
                 "AUDIO META:", 
-                stream_new.getAudioTracks()[0].getCapabilities()
+                stream_new.getAudioTracks()[0].getConstraints()
             )
         }
         Animator.video_on = true; // audioTimer's loop condition.
@@ -348,7 +359,7 @@ function get_canvas_stream_beta(stream, constraints)
         console.log("Audio Only")
         console.log(
             "AUDIO META:", 
-            stream.getAudioTracks()[0].getCapabilities()
+            stream.getAudioTracks()[0].getConstraints()
         )
         return stream
     }
@@ -393,12 +404,11 @@ function nextVideoFrame()
 function drawCanvas(canvas, img, draw_type) 
 {
     if(Animator.draw_type==="tfjs-pixel"){
-        console.log("drawing tfjs" , Animator.tfjs_draw_counter)
+        //  console.log("drawing tfjs" , Animator.tfjs_draw_counter)
         Animator.tfjs_draw_counter++
         //  Draw first to feed canvas
         var feed = document.getElementById("tfjs_feed")
         tensor_draw_pixel(feed, img)
-
         //  Scale and draw to primary canvas
         scale_draw(canvas, feed)
     }
@@ -420,7 +430,6 @@ async function tensor_draw_pixel(canvas, img)
         if (Animator.tfjs_draw_counter==300)
             throw ReferenceError
         const partSegmentation = await Animator.net.segmentMultiPersonParts(img);
-
         // The colored part image is an rgb image with a corresponding color from the
         // rainbow colors for each part at each pixel, and black pixels where there is
         // no part.
@@ -455,7 +464,6 @@ loadPix()
 
 async function loadPix()
 {
-    //   net = await bodyPix.load();
     Animator.net = await bodyPix.load({
     architecture: 'MobileNetV1',
     outputStride: 16,

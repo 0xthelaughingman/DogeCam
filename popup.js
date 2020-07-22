@@ -75,13 +75,13 @@ document.querySelector('.save-btn>button').addEventListener('click', event => {
 
 
 function storage_write(draw_type, draw_param){
-    chrome.storage.sync.set({'draw_type': draw_type, 'draw_param': draw_param}, function() {
+    browser.storage.sync.set({'draw_type': draw_type, 'draw_param': draw_param}, function() {
         console.log('Settings saved');
     });
 }
 
 function storage_read(){
-    chrome.storage.sync.get(['draw_type', 'draw_param'], function(items) {
+    browser.storage.sync.get(['draw_type', 'draw_param'], function(items) {
         console.log('Settings retrieved', items);
     });
   
