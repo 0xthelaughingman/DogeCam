@@ -40,7 +40,8 @@ let Animator = {
     tfjs_draw_counter: 0,
     video_on: false,
 
-    draw_type: null,    //  These are set from the Event listener. Check current supported styles/types/strings in popup.js/.html
+    //  These are set from the Event listener. Check current supported styles/types/strings in popup.js/.html
+    draw_type: null,    
     draw_param: null,
     draw_style: null,        
     draw_string: null,
@@ -188,7 +189,9 @@ function resize_reset_update()
         vid.width = Animator.limit_tfjs.width.max
         vid.style.right = (2 * Animator.limit_tfjs.width.max)
     }
-    else    //  Match primary canvas otherwise.
+
+    //  Match primary canvas otherwise.
+    else    
     {
         vid.height = primary_canvas.height
         vid.width = primary_canvas.width
@@ -282,9 +285,6 @@ function override_webkitGetUserMedia()
         console.log("webkitGetUserMedia success override fallback")
     }
 }
-
-
-
 
 function get_canvas_stream_beta(stream, constraints)
 {   

@@ -44,7 +44,6 @@ function storage_get_params(){
     })    
 }
 
-
 /** 
  * Listener for changes to the draw_type from the popup!
  */
