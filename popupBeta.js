@@ -96,7 +96,6 @@ function toggle_all_sliders(){
     });
 }
 
-
 document.getElementById("video-ops").addEventListener( "change", function(){
     clear_style_state()
     toggle_filter_types(this.value)
@@ -152,6 +151,7 @@ function read_2DFilter_state(){
             params.push(cur_param)
         }
     });
+
     //  Incase user keeps all 2D-Filters as no-filters too...
     if(styles.length==0){
         DogeCamConfiguration.draw_type = 'no-filter'
@@ -265,11 +265,14 @@ function storage_read(){
     }); 
 }
 
-/* Only for Mock testing
+/* 
+
+// Only for Mock testing
 document.getElementById('read-btn').addEventListener('click', () => {
     console.log("Read button")
     storage_read()
 });
+
 */
 
 document.getElementById('save-btn').addEventListener('click', () => {
