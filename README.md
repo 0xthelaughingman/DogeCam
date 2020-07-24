@@ -1,5 +1,5 @@
 # DogeCam
- A chrome extension to make your video calls Doge-y!
+ A browser extension to make your video calls Doge-y!
 
  **Do go through**: https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
 
