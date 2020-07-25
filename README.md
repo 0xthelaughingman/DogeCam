@@ -2,7 +2,7 @@
  A browser extension to make your video calls Doge-y!
 
  **Do go through**: https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
-
+ **Available on**: Chrome & Mozilla FireFox
 
 # Testing/Installing Locally:
 
