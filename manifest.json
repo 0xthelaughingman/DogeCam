@@ -39,6 +39,7 @@
     },
 
     "web_accessible_resources": [
-        "combined.js"
+        "combined.js",
+        "render_teams.js"
     ]
 }

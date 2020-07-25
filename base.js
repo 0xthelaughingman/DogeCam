@@ -13,8 +13,17 @@ else{
 }
 
 var s = document.createElement('script');
-// TODO: add "script.js" to web_accessible_resources in manifest.json
-s.src = api_base.runtime.getURL('combined.js');
+
+/*
+    If MS Teams, switch to render_teams, it doesn't have tfjs modules/exports.
+*/
+if(window.location.href.indexOf("teams.microsoft.com") > -1){
+    s.src = api_base.runtime.getURL('render_teams.js');
+}
+else{
+    s.src = api_base.runtime.getURL('combined.js');
+}
+
 (document.head || document.documentElement).appendChild(s);
 s.onload = function(){
     // dispatch an update for extension's first run on the tab(s), regardless of changes.

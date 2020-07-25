@@ -213,11 +213,16 @@ function remove_dynamic_elements()
     }
 }
 
-override_chrome_getUserMedias()
 
 /*
     These should suffice for Firefox too.
 */
+
+let originalGetUserMedia = navigator.getUserMedia;
+let originalWebkitGetUserMedia = navigator.webkitGetUserMedia;
+let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
+
+override_chrome_getUserMedias()
 
 function override_chrome_getUserMedias()
 {
@@ -230,7 +235,6 @@ function override_chrome_getUserMedias()
 
 function override_getUserMedia()
 {
-    let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
     if(navigator.mediaDevices.getUserMedia){
         navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) {
             return new Promise((resolve, reject) => {
@@ -248,9 +252,7 @@ function override_getUserMedia()
 }
 
 function override_getUserMediaFallback()
-{
-    let originalGetUserMedia = navigator.getUserMedia;
-    
+{   
     if (navigator.getUserMedia)
     {
         //  console.log("overriding getUserMedia fallback")
@@ -269,16 +271,15 @@ function override_getUserMediaFallback()
 
 function override_webkitGetUserMedia()
 {
-    let originalGetUserMedia = navigator.webkitGetUserMedia;
     if (navigator.webkitGetUserMedia)
     {
         //  console.log("overriding webkitGetUserMedia")
-        navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
+        navigator.webkitGetUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
                 "navigator.webkitGetUserMedia Requested Constraints:",
                 constraints
                 )
-            originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
+            originalWebkitGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };
@@ -515,8 +516,3 @@ function audioTimerLoop(callback, frequency)
     };
 }
 
-
-i = setInterval(function(){
-    console.log("overriding")
-    override_chrome_getUserMedias()
-}, 5000)
