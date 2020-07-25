@@ -74,8 +74,8 @@ document.addEventListener('config-update', function (data) {
 
 function utils_json_res(constraints, fallback_constraints)
 {
-    var width_patt = /width\"*:\{*[(\"max\")|(\"min\")|(\"exact\")]*:*(\d+)/g
-    var height_patt = /height\"*:\{*[(\"max\")|(\"min\")|(\"exact\")]*:*(\d+)/g
+    var width_patt = /[wW]idth\"*:\{*[(\"max\")|(\"min\")|(\"exact\")]*:*(\d+)/g
+    var height_patt = /[hH]eight\"*:\{*[(\"max\")|(\"min\")|(\"exact\")]*:*(\d+)/g
     var json_string = JSON.stringify(constraints)
 
     try
@@ -221,30 +221,30 @@ override_chrome_getUserMedias()
 
 function override_chrome_getUserMedias()
 {
-    console.log("Calling override_webkitGetUserMedia")
     override_webkitGetUserMedia()
-    console.log("Calling override_getUserMedia")
+
     override_getUserMedia()
-    console.log("override_getUserMediaFallback")
+
     override_getUserMediaFallback()
 }
 
 function override_getUserMedia()
 {
     let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
-    navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) {
- 
-        return new Promise((resolve, reject) => {
-            console.log(
-                "Original navigator.mediaDevices.getUserMedia Requested Constraints:", 
-                constraints
-            )
-            originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
-            .then(stream => resolve(get_canvas_stream_beta(stream, constraints)))    //  this is where we'd divert the stream to a call that modifies it, before resolving the promise
-            .catch(reject)
-        });
+    if(navigator.mediaDevices.getUserMedia){
+        navigator.mediaDevices.getUserMedia = function getUserMedia(constraints) {
+            return new Promise((resolve, reject) => {
+                console.log(
+                    "navigator.mediaDevices.getUserMedia Requested Constraints:", 
+                    constraints
+                )
+                originalMediaDevicesGetUserMedia.bind(navigator.mediaDevices)(constraints)
+                .then(stream => resolve(get_canvas_stream_beta(stream, constraints)))    //  this is where we'd divert the stream to a call that modifies it, before resolving the promise
+                .catch(reject)
+            });
+        }
+        //  console.log("success override")
     }
-    console.log("success override")
 }
 
 function override_getUserMediaFallback()
@@ -253,17 +253,17 @@ function override_getUserMediaFallback()
     
     if (navigator.getUserMedia)
     {
-        console.log("overriding getUserMedia fallback")
+        //  console.log("overriding getUserMedia fallback")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "Original navigator.getUserMedia Requested Constraints:",
+                "navigator.getUserMedia Requested Constraints:",
                 constraints
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };  
-        console.log("getUserMedia success override fallback")
+        //  console.log("getUserMedia success override fallback")
     }
 }
 
@@ -272,17 +272,17 @@ function override_webkitGetUserMedia()
     let originalGetUserMedia = navigator.webkitGetUserMedia;
     if (navigator.webkitGetUserMedia)
     {
-        console.log("overriding webkitGetUserMedia")
+        //  console.log("overriding webkitGetUserMedia")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
-                "webkitGetUserMedia Original FALLBACK Requested Constraints:",
+                "navigator.webkitGetUserMedia Requested Constraints:",
                 constraints
                 )
             originalGetUserMedia.bind(navigator)(constraints, function (stream) {   
                 return resolve(get_canvas_stream_beta(stream, constraints));
             }, reject);}).then(success).catch(error);   
         };
-        console.log("webkitGetUserMedia success override fallback")
+        //  console.log("webkitGetUserMedia success override fallback")
     }
 }
 
@@ -514,3 +514,9 @@ function audioTimerLoop(callback, frequency)
         }
     };
 }
+
+
+i = setInterval(function(){
+    console.log("overriding")
+    override_chrome_getUserMedias()
+}, 5000)
