@@ -29,11 +29,10 @@
   
 2. _**Persistent Storage & Reads**_: Since our combined.js is technically not a content script but an injected script, it doesn't have the exposure to chrome APIs.
     * To overcome that drawback, we pass the messages on update/onchange from the base.js(content script) to combined.js.
-    * base.js and the popup have all the access to chrome APIs.
+    * base.js and the popup have all the access to chrome/broswer APIs.
 
-3. _**Microsoft Teams**_: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes 
-    * **[DOESN'T WORK]** _**Removing tfjs/body-pix src from combined.js**_: This allows our script to load up and we can see the override method's logs, but doesn't seem like our script handles the stream hand over at all. Could be an underlying timing issue w.r.t the override?
+3. _**Microsoft Teams**_: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes: 
+    * _**Loading render_teams.js without the TFJS src/modules**_: This allows our script to load up and we can continue with the standard 2D filters. We should probably attempt to include TFJS for Teams still.
     
-4. **[HIGH PRIORITY]** _**Override Fails for Teams/JioMeet**_: The getUserMedia overrides fail for Teams/JioMeet at the moment. Both use a variety of plugins and add-on scripts to handle the stream. The same design if adopted by the supported apps, would lead to them not being supported by the extension too!
-    * Figure out a way to override the stream handover for either of the 2, assumption is the solution for one should be readily applicable for the other or atmost with minimal tweaks
+
 
