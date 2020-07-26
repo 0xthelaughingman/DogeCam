@@ -12,4 +12,4 @@ The process will involve copying the file to the extension's directory as per th
 4. Here, the folder to open will depend on the Extension's identifier/ID. Check DogeCam's ID as on Chrome's extensions page: chrome://extensions/
 5. Open the folder-> And it's version subfolder. Now you are at the extension's root. Simply navigate to videos folder and replace sample.mp4 with a version of your choice.
 
-***NOTE***: The filename **should** remain sample.mp4 
+***NOTE***: The filename **should** remain ***sample.mp4*** 
