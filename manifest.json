@@ -40,6 +40,7 @@
 
     "web_accessible_resources": [
         "combined.js",
-        "render_teams.js"
+        "render_teams.js",
+        "videos/sample.mp4"
     ]
 }

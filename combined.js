@@ -135,6 +135,7 @@ function add_dynamic_elements(constraints, fallback_constraints)
     wrap_div.style.width= "0"
     wrap_div.style.height= "0"
     wrap_div.style.overflow= "hidden"
+    wrap_div.style.zIndex= 0
 
     /*  
         A VideoElement needed to render the imageFrames that goes into the TFJS module. We can't use the first canvas as that is the 
@@ -197,7 +198,6 @@ function resize_reset_update()
         vid.width = primary_canvas.width
         vid.style.right = (2 * primary_canvas.width)
     }
-
     //  Clear canvas and reset filters
     primary_canvas.getContext('2d').filter='none'
     primary_canvas.getContext('2d').fillRect(0,0, primary_canvas.width, primary_canvas.height)
@@ -404,7 +404,7 @@ function nextVideoFrame()
 */
 function drawCanvas(canvas, img, draw_type) 
 {
-    if(Animator.draw_type==="tfjs-pixel"){
+    if(draw_type==="tfjs-pixel"){
         //  console.log("drawing tfjs" , Animator.tfjs_draw_counter)
         Animator.tfjs_draw_counter++
         //  Draw first to feed canvas
@@ -412,6 +412,15 @@ function drawCanvas(canvas, img, draw_type)
         tensor_draw_pixel(feed, img)
         //  Scale and draw to primary canvas
         scale_draw(canvas, feed)
+    }
+    else if (draw_type==="video-playback"){
+        //  console.log("drawing video asset")
+        var video_asset = document.getElementById("playback_video")
+        if(!video_asset)console.log("null")
+        canvas.getContext('2d').filter="none"
+        //  console.log(video_asset.height)
+        scale_draw_video(canvas, video_asset)
+        //  canvas.getContext('2d').drawImage(video_asset, 0, 0)
     }
     else{
         //  console.log("drawing 2d")
@@ -459,6 +468,18 @@ function scale_draw(canvas, img)
     let y = (canvas.height - img.height * ratio) / 2;
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height,
         x, y, img.width * ratio, img.height * ratio);
+}
+
+function scale_draw_video(canvas, vid)
+{   
+    //  The dimension fields have to be videoWidth/videoHeight as the source of the frame is the actual video src, not the video element!
+    let ratio  = Math.min(canvas.width / vid.videoWidth, canvas.height / vid.videoHeight);
+    //  console.log(ratio, canvas.width / vid.videoWidth, canvas.height / vid.videoHeight)
+    let x = (canvas.width - vid.videoWidth * ratio) / 2;
+    let y = (canvas.height - vid.videoHeight * ratio) / 2;
+    
+    canvas.getContext('2d').drawImage(vid, 0, 0, Math.round(vid.videoWidth), Math.round(vid.videoHeight),
+        Math.round(x), Math.round(y), Math.round(vid.videoWidth * ratio), Math.round(vid.videoHeight * ratio));
 }
 
 loadPix()

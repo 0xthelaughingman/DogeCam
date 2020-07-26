@@ -385,11 +385,32 @@ function drawCanvas(canvas, img, draw_type)
         canvas.getContext('2d').filter="none"
         canvas.getContext('2d').drawImage(img, 0, 0)
     }
+    else if (draw_type==="video-playback"){
+        //  console.log("drawing video asset")
+        var video_asset = document.getElementById("playback_video")
+        if(!video_asset)console.log("null")
+        canvas.getContext('2d').filter="none"
+        //  console.log(video_asset.height)
+        scale_draw_video(canvas, video_asset)
+        //  canvas.getContext('2d').drawImage(video_asset, 0, 0)
+    }
     else{
         //  console.log("drawing 2d")
         canvas.getContext('2d').filter=Animator.draw_string
         canvas.getContext('2d').drawImage(img, 0, 0)
     }
+}
+
+function scale_draw_video(canvas, vid)
+{   
+    //  The dimension fields have to be videoWidth/videoHeight as the source of the frame is the actual video src, not the video element!
+    let ratio  = Math.min(canvas.width / vid.videoWidth, canvas.height / vid.videoHeight);
+    //  console.log(ratio, canvas.width / vid.videoWidth, canvas.height / vid.videoHeight)
+    let x = (canvas.width - vid.videoWidth * ratio) / 2;
+    let y = (canvas.height - vid.videoHeight * ratio) / 2;
+    
+    canvas.getContext('2d').drawImage(vid, 0, 0, Math.round(vid.videoWidth), Math.round(vid.videoHeight),
+        Math.round(x), Math.round(y), Math.round(vid.videoWidth * ratio), Math.round(vid.videoHeight * ratio));
 }
 
 /*
