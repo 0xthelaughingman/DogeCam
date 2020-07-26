@@ -21,7 +21,11 @@
  
  **PUBLISHING WARNING**: The manifest required a new key "browser_specific_settings" to support FireFox compatibility and testing, this should ideally be removed on the release branch.
 
+# Further Enhancements/Ideas/TODOs:
 
+* _**Recorded/Looped Video Playback**_: Allow for users to be able to play sample assets(.mp4 videos) instead of live Camera feed for videocalls, loop as needed. Will need an analysis if the browser permissions/Content-policies would allow for something of the sort. For simplicity, we can assume the User records the videos/assets elsewhere and not through the extension and then just transfers the assets to a directory in the extension root.
+    
+    
 # Notes/Known Issues:
 
 1. _**TFJS performance issues**_: The TFJS draw_mode is way too compute intensive. Botches the UI responsiveness. Possible approaches:
