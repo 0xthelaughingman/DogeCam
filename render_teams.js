@@ -54,8 +54,7 @@ function utils_json_res(constraints, fallback_constraints)
     var height_patt = /[hH]eight\"*:\{*[(\"max\")|(\"min\")|(\"exact\")]*:*(\d+)/g
     var json_string = JSON.stringify(constraints)
 
-    try
-    {
+    try{
         var max_height=0
         json_string.match(height_patt).forEach((element) => {
             var res = parseInt(element.match(/(\d+)/g))
@@ -70,14 +69,12 @@ function utils_json_res(constraints, fallback_constraints)
                 max_width=res	
         });
 
-        if(max_height==0 || max_width==0)
-        {
+        if(max_height==0 || max_width==0){
             max_height = fallback_constraints.height.max
             max_width = fallback_constraints.width.max
         }
     }
-    catch(error)
-    { 
+    catch(error){ 
         console.log("utils error", error)
         max_height = fallback_constraints.height.max
         max_width = fallback_constraints.width.max
@@ -127,8 +124,7 @@ function add_dynamic_elements(constraints, fallback_constraints)
 
     //  If TFJS renders, Limit Video to tfjs supported constraints
     //  We will upscale from the extra canvas here before returning to primary canvas
-    if(Animator.draw_type==="tfjs-pixel")
-    {
+    if(Animator.draw_type==="tfjs-pixel"){
         invisible_video.height = Animator.limit_tfjs.height.max
         invisible_video.width = Animator.limit_tfjs.width.max
         invisible_video.style.right = (2 * Animator.limit_tfjs.width.max)
@@ -159,16 +155,14 @@ function resize_reset_update()
     var vid = document.getElementById("invisible_video")
 
     // Ensure resized for TFJS
-    if(Animator.draw_type==="tfjs-pixel")
-    {
+    if(Animator.draw_type==="tfjs-pixel"){
         vid.height = Animator.limit_tfjs.height.max
         vid.width = Animator.limit_tfjs.width.max
         vid.style.right = (2 * Animator.limit_tfjs.width.max)
     }
 
     //  Match primary canvas otherwise.
-    else    
-    {
+    else    {
         vid.height = primary_canvas.height
         vid.width = primary_canvas.width
         vid.style.right = (2 * primary_canvas.width)
@@ -183,8 +177,7 @@ function resize_reset_update()
 function remove_dynamic_elements()
 {
     var dyn = document.getElementById("wrap_div")
-    if(dyn)
-    {
+    if(dyn){
         document.body.removeChild(dyn)
     }
 }
@@ -229,8 +222,7 @@ function override_getUserMedia()
 
 function override_getUserMediaFallback()
 {   
-    if (navigator.getUserMedia)
-    {
+    if (navigator.getUserMedia){
         //  console.log("overriding getUserMedia fallback")
         navigator.getUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
@@ -247,8 +239,7 @@ function override_getUserMediaFallback()
 
 function override_webkitGetUserMedia()
 {
-    if (navigator.webkitGetUserMedia)
-    {
+    if (navigator.webkitGetUserMedia){
         //  console.log("overriding webkitGetUserMedia")
         navigator.webkitGetUserMedia = function getUserMedia(constraints, success, error) { new Promise(function (resolve, reject){
             console.log(
@@ -267,8 +258,7 @@ function get_canvas_stream_beta(stream, constraints)
 {   
     var stream_new;
     console.log("in stream handover")
-    if(constraints.video)
-    {   
+    if(constraints.video){   
         //  Check if it's a screen share!
         if( JSON.stringify(constraints).indexOf("chromeMediaSource") > -1 || 
         // For Firefox
@@ -316,8 +306,7 @@ function get_canvas_stream_beta(stream, constraints)
             stream_new.getVideoTracks()[0].getConstraints()
         )
 
-        if(constraints.audio)
-        {
+        if(constraints.audio){
             stream_new.addTrack(stream.getAudioTracks()[0]);
             console.log(
                 "AUDIO META:", 
@@ -330,8 +319,7 @@ function get_canvas_stream_beta(stream, constraints)
         console.log("returning a stream")
         return stream_new
     }
-    else if (constraints.audio)
-    {   
+    else if (constraints.audio){   
         //  only audio, just let the original stream be as is.
         console.log("Audio Only")
         console.log(
@@ -360,8 +348,7 @@ function nextVideoFrame()
     var video = document.getElementById("invisible_video")
     var canvas_track = Animator.canvas_stream.getVideoTracks()[0]
 
-    if(canvas_track.readyState != 'live')
-    {
+    if(canvas_track.readyState != 'live'){
         Animator.original_stream.getVideoTracks()[0].stop()
         Animator.video_on = false
         console.log("Video Stopped")
@@ -385,11 +372,31 @@ function drawCanvas(canvas, img, draw_type)
         canvas.getContext('2d').filter="none"
         canvas.getContext('2d').drawImage(img, 0, 0)
     }
+    else if (draw_type==="video-playback"){
+        var video_asset = document.getElementById("playback_video")
+        if(!video_asset){
+            console.log("null, playback video not found/initialized")
+        }
+        canvas.getContext('2d').filter="none"
+        scale_draw_video(canvas, video_asset)
+    }
     else{
         //  console.log("drawing 2d")
         canvas.getContext('2d').filter=Animator.draw_string
         canvas.getContext('2d').drawImage(img, 0, 0)
     }
+}
+
+function scale_draw_video(canvas, vid)
+{   
+    //  The dimension fields have to be videoWidth/videoHeight as the source of the frame is the actual video src, not the video element!
+    let ratio  = Math.min(canvas.width / vid.videoWidth, canvas.height / vid.videoHeight);
+    //  console.log(ratio, canvas.width / vid.videoWidth, canvas.height / vid.videoHeight)
+    let x = (canvas.width - vid.videoWidth * ratio) / 2;
+    let y = (canvas.height - vid.videoHeight * ratio) / 2;
+    
+    canvas.getContext('2d').drawImage(vid, 0, 0, Math.round(vid.videoWidth), Math.round(vid.videoHeight),
+        Math.round(x), Math.round(y), Math.round(vid.videoWidth * ratio), Math.round(vid.videoHeight * ratio));
 }
 
 /*
@@ -398,8 +405,7 @@ function drawCanvas(canvas, img, draw_type)
 */
 async function tensor_draw_pixel(canvas, img)
 {
-    try
-    {   
+    try{   
         if (Animator.tfjs_draw_counter==300)
             throw ReferenceError
         const partSegmentation = await Animator.net.segmentMultiPersonParts(img);
@@ -415,8 +421,7 @@ async function tensor_draw_pixel(canvas, img)
             canvas, img, coloredPartImage, opacity, maskBlurAmount,
             flipHorizontal);
     }
-    catch(error)
-    {   
+    catch(error){   
         Animator.tfjs_draw_counter  = 0
         // Should be filling with a black/gray rect entirely, to keep User anonymous...
         console.log(error)
