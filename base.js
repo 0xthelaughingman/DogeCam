@@ -67,7 +67,6 @@ api_base.storage.onChanged.addListener(async function(changes, namespace) {
     }
 });
 
-
 /* 
     Functions for maintaining our playback video asset/element which will be used in the render/combined.js 
 */
@@ -81,8 +80,6 @@ function set_playback_element(){
         playback_video.width = 1280
         playback_video.height = 720
         playback_video.style.right = -1280
-        //  playback_video.style.objectFit = "fill"
-
 
         //  Div that keeps the content out of the viewport, disables overflow so no scrollbars!
         var playback_div = document.createElement("div")
@@ -102,7 +99,6 @@ function set_playback_element(){
 
         document.body.appendChild(playback_div)
         console.log("playback div added")
-        //  playback_video.play()
     }
     catch(error){
         console.log("Static Video playback failed", error)
