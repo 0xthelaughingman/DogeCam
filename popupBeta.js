@@ -46,13 +46,10 @@ storage_read()
 */
 function toggle_filter_types(value){
     if(value==="2d-filter"){
-        //  document.getElementById("options-2d").style.display = "block"
         $(".options-2d").slideDown()
-
         toggle_all_sliders()
     }
     else{
-        //  document.getElementById("options-2d").style.display = "none"
         $(".options-2d").slideUp()
     }
 }
@@ -64,14 +61,12 @@ function toggle_filter_types(value){
 */
 function toggle_current_slider(element, value){
     var child_slider = (element.parentNode).getElementsByClassName("filter-param")[0]
-    //  console.log(child_slider)
+
     if(element.value==="no-filter"){
-        //  child_slider.style.display="none";
         child_slider.value = 50
         $(child_slider).slideUp()
     }
     else{
-        //  child_slider.style.display="block";
         $(child_slider).slideDown()
         get_popup_state()
     }
@@ -117,7 +112,6 @@ function clear_style_state(){
 
 function get_popup_state(){
     var draw_type = document.getElementById("video-ops").value
-    //  console.log("Video Filter Value: ", draw_type)
 
     if(draw_type==="2d-filter"){
         read_2DFilter_state()
@@ -128,7 +122,6 @@ function get_popup_state(){
         DogeCamConfiguration.draw_param = null
     }
     DogeCamConfiguration.draw_string = make_draw_string(DogeCamConfiguration.draw_style, DogeCamConfiguration.draw_param)
-    //  console.log(DogeCamConfiguration)
     draw_canvas()
 }
 
@@ -194,7 +187,6 @@ function set_2DFilter_state(draw_style, draw_param){
 
 function draw_canvas(){
     //  clear previous buffer.
-    //  console.log("drawing")
     canvas.getContext('2d').fillRect(0,0, canvas.width, canvas.height)
 
     let ratio  = Math.min(canvas.width / img.width, canvas.height / img.height);
@@ -247,14 +239,12 @@ function make_draw_string(draw_style, draw_param){
 
 function storage_write(){
     api_base.storage.sync.set({'DogeCamConfiguration': DogeCamConfiguration},function() {
-            //  console.log('Settings saved');
             console.log("Wrote to Store:", DogeCamConfiguration)
         });
 }
 
 function storage_read(){
     api_base.storage.sync.get(['DogeCamConfiguration'], function(item) {
-        //  console.log('Settings retrieved', item);
         //  Don't override the default declaration if not previously stored
         storage_present = !(item.DogeCamConfiguration == null || typeof item.DogeCamConfiguration === "undefined")
         if(storage_present) {

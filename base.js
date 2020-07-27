@@ -112,8 +112,7 @@ function set_playback_element(){
 
 function unset_playback_element(){
     var dyn = document.getElementById("playback_div")
-    if(dyn)
-    {
+    if(dyn){
         document.body.removeChild(dyn)
     }
 }
