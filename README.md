@@ -23,7 +23,7 @@
 
 # Further Enhancements/Ideas/TODOs:
 
-* ***Voice Modifiers***: Allow for users to apply voice modifiers to their Audio input/streams.
+* ***Voice Modifiers***: Allow for users to be able to apply voice modifiers to their Audio input/streams.
     
     
 # Notes/Known Issues:
