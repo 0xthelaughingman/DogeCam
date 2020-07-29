@@ -23,7 +23,7 @@
 
 # Further Enhancements/Ideas/TODOs:
 
-* ***Recorded/Looped Video Playback***: Allow for users to be able to play sample assets(.mp4 videos) instead of live Camera feed for videocalls, loop as needed. Will need an analysis if the browser permissions/Content-policies would allow for something of the sort. For simplicity, we can assume the User records the videos/assets elsewhere and not through the extension and then just transfers the assets to a directory in the extension root.
+* ***Voice Modifiers***: Allow for users to apply voice modifiers to their Audio input/streams.
     
     
 # Notes/Known Issues:
