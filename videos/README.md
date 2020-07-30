@@ -19,7 +19,7 @@ Preferably, ***only enable the mode after configuring the playback asset/file***
 ***NOTE***: The filename **should** remain ***sample.mp4*** 
 
 # 2. Chrome Warning/Corruption
-If you modify an extension's file contents Chrome's safety measures render the extension as "corrupt" and automatically disable it.
+If you modify an extension's file contents Chrome's safety measures render the extension as "corrupt" and automatically disable it.<br>
 There are ***2 approaches*** to solve this issue as of now:
 
  *  Open DogeCam's Chrome Store page.<br>
