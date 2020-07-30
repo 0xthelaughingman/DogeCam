@@ -38,5 +38,8 @@
 3. ***Microsoft Teams***: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes: 
     * ***Loading render_teams.js without the TFJS src/modules***: This allows our script to load up and we can continue with the standard 2D filters. We should probably attempt to include TFJS for Teams still.
     
+4. ***Video-Playback mode***: At times, due to timing issues and page load delays, the playback video may not work if you launch the app/page with the playback mode selected.
+    * ***Ideally, keep the 2D/no-filter mode on and switch to the the video-playback mode once the call/app has fully loaded.***
+    
 
 
