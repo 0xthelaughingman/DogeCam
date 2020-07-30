@@ -33,3 +33,6 @@ There are ***2 approaches*** to solve this issue as of now:
     ***Far easier to avoid the disabling and not worry about the call/video being disrupted with this approach.***<br>
     Simply clone the master/latest release branch to your desktop and follow the steps here:<br>
     https://github.com/Cruzo007/DogeCam#testinginstalling-locally<br>
+
+# Known Issues/Troubleshooting
+* At times, *due to timing issues and page load delays*, the playback video may not work if you launch the app/page with the playback mode selected. ***Ideally, keep the 2D/no-filter mode on and switch to the the video-playback mode once the call/app has fully loaded.***
