@@ -2,8 +2,8 @@
  A browser extension to make your video calls Doge-y!
 
  **Do go through**: https://github.com/Cruzo007/ChromeExtensionTutorial as a basic tutorial of what all has been discussed/attempted.
- 
- **Available on**: Chrome & Mozilla FireFox
+ **Available on**: Chrome & Mozilla FireFox<br><br>
+!["Hello There!"](https://github.com/Cruzo007/Cruzo007/blob/master/DogeCam.gif)
 
 # Testing/Installing Locally:
 
