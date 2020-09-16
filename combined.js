@@ -46,9 +46,11 @@ let Animator = {
     draw_style: null,        
     draw_string: null,
 
+    segGen: false,
     segment: null,
 
     limit_tfjs: tfjs_240p,
+
     logging: false,
     log: (message) => {
         if(Animator.logging)
@@ -66,7 +68,7 @@ Animator.logging = true;
  */
 document.addEventListener('config-update', function (data) {
     console.log('received', data.detail);
-    Animator.draw_type = data.detail.draw_type
+    Animator.draw_type  = data.detail.draw_type
     Animator.draw_param = data.detail.draw_param
     Animator.draw_style = data.detail.draw_style
     Animator.draw_string = data.detail.draw_string
@@ -186,7 +188,6 @@ function resize_reset_update()
         vid.height = Animator.limit_tfjs.height.max
         vid.width = Animator.limit_tfjs.width.max
         vid.style.right = (2 * Animator.limit_tfjs.width.max)
-        segmentGenerator(vid)
     }
 
     //  Match primary canvas otherwise.
@@ -196,6 +197,7 @@ function resize_reset_update()
         vid.style.right = (2 * primary_canvas.width)
     }
     //  Clear canvas and reset filters
+    
     primary_canvas.getContext('2d').filter='none'
     primary_canvas.getContext('2d').fillRect(0,0, primary_canvas.width, primary_canvas.height)
 }
@@ -343,7 +345,8 @@ function get_canvas_stream_beta(stream, constraints)
         Animator.video_on = true; // audioTimer's loop condition.
         audioTimerLoop(nextVideoFrame, 30)
         video.onloadeddata = function(){
-            segmentGenerator(video)
+            if(Animator.segGen!=true)
+                segmentGenerator(video)
         }
         //  nextVideoFrame()
         console.log("returning a stream")
@@ -422,20 +425,27 @@ function drawCanvas(canvas, img, draw_type)
 
 async function segmentGenerator(video)
 {
-    while(Animator.video_on==true && (Animator.draw_type==="tfjs-pixel" || Animator.draw_type==="tfjs-blur")){
-        const segmentationStartTimeMs = performance.now()
+    Animator.segGen = true
+    while(Animator.video_on==true ){
+            if(Animator.draw_type.indexOf("tfjs") < 0){
+                await sleep(1000)
+                continue
+            }
 
-        if(Animator.draw_type==="tfjs-pixel")
-            Animator.segment = await Animator.net.segmentMultiPersonParts(video)
-        else
-            Animator.segment = await Animator.net.segmentPerson(video)
+            const segmentationStartTimeMs = performance.now()
 
-        lastFrameInferenceTimeMs = performance.now() - segmentationStartTimeMs;
-        const sleepTimeMs = 3 * this.lastFrameInferenceTimeMs;
-        //  console.log("segment attempted")
-        await sleep(sleepTimeMs);
-    }
+            if(Animator.draw_type==="tfjs-pixel")
+                Animator.segment = await Animator.net.segmentMultiPersonParts(video)
+            else if (Animator.draw_type==="tfjs-blur")
+                Animator.segment = await Animator.net.segmentPerson(video)
+
+            lastFrameInferenceTimeMs = performance.now() - segmentationStartTimeMs;
+            const sleepTimeMs = 3 * this.lastFrameInferenceTimeMs;
+            //  console.log("segment attempted")
+            await sleep(sleepTimeMs);
+    }  
     console.log("Exiting segGen")
+    Animator.segGen = false
 }
 
 function sleep(ms) {
