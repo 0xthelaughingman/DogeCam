@@ -46,7 +46,11 @@ let Animator = {
     draw_style: null,        
     draw_string: null,
 
+    segGen: false,
+    segment: null,
+
     limit_tfjs: tfjs_240p,
+
     logging: false,
     log: (message) => {
         if(Animator.logging)
@@ -64,7 +68,7 @@ Animator.logging = true;
  */
 document.addEventListener('config-update', function (data) {
     console.log('received', data.detail);
-    Animator.draw_type = data.detail.draw_type
+    Animator.draw_type  = data.detail.draw_type
     Animator.draw_param = data.detail.draw_param
     Animator.draw_style = data.detail.draw_style
     Animator.draw_string = data.detail.draw_string
@@ -193,6 +197,7 @@ function resize_reset_update()
         vid.style.right = (2 * primary_canvas.width)
     }
     //  Clear canvas and reset filters
+    
     primary_canvas.getContext('2d').filter='none'
     primary_canvas.getContext('2d').fillRect(0,0, primary_canvas.width, primary_canvas.height)
 }
@@ -339,6 +344,10 @@ function get_canvas_stream_beta(stream, constraints)
         }
         Animator.video_on = true; // audioTimer's loop condition.
         audioTimerLoop(nextVideoFrame, 30)
+        video.onloadeddata = function(){
+            if(Animator.segGen!=true)
+                segmentGenerator(video)
+        }
         //  nextVideoFrame()
         console.log("returning a stream")
         return stream_new
@@ -391,12 +400,11 @@ function nextVideoFrame()
 */
 function drawCanvas(canvas, img, draw_type) 
 {
-    if(draw_type==="tfjs-pixel"){
-        //  console.log("drawing tfjs" , Animator.tfjs_draw_counter)
+    if(draw_type==="tfjs-pixel" || draw_type==="tfjs-blur"){
         Animator.tfjs_draw_counter++
         //  Draw first to feed canvas
         var feed = document.getElementById("tfjs_feed")
-        tensor_draw_pixel(feed, img)
+        drawSegment(feed, img)
         //  Scale and draw to primary canvas
         scale_draw(canvas, feed)
     }
@@ -415,20 +423,47 @@ function drawCanvas(canvas, img, draw_type)
     }
 }
 
-/*
-    TODO: Base function for TFJS based draws.
-    Should handle BodyPix variations (Overlay/Pixels) and Pose-Animator.
-*/
-async function tensor_draw_pixel(canvas, img)
+async function segmentGenerator(video)
 {
-    try{   
-        if (Animator.tfjs_draw_counter==300)
-            throw ReferenceError
-        const partSegmentation = await Animator.net.segmentMultiPersonParts(img);
-        // The colored part image is an rgb image with a corresponding color from the
-        // rainbow colors for each part at each pixel, and black pixels where there is
-        // no part.
-        const coloredPartImage = bodyPix.toColoredPartMask(partSegmentation);
+    Animator.segGen = true
+    while(Animator.video_on==true ){
+            if(Animator.draw_type.indexOf("tfjs") < 0){
+                await sleep(1000)
+                continue
+            }
+
+            const segmentationStartTimeMs = performance.now()
+
+            if(Animator.draw_type==="tfjs-pixel")
+                Animator.segment = await Animator.net.segmentMultiPersonParts(video)
+            else if (Animator.draw_type==="tfjs-blur")
+                Animator.segment = await Animator.net.segmentPerson(video)
+
+            lastFrameInferenceTimeMs = performance.now() - segmentationStartTimeMs;
+            const sleepTimeMs = 3 * this.lastFrameInferenceTimeMs;
+            //  console.log("segment attempted")
+            await sleep(sleepTimeMs);
+    }  
+    console.log("Exiting segGen")
+    Animator.segGen = false
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function drawSegment(canvas, img)
+{   
+    if(Animator.draw_type==="tfjs-pixel")
+        drawPixelSegment(canvas, img)
+    else
+        drawBlurSegment(canvas, img)    
+}
+
+function drawPixelSegment(canvas, img)
+{
+    try{
+        const coloredPartImage = bodyPix.toColoredPartMask(Animator.segment);
         const opacity = 1;
         const flipHorizontal = false;
         const maskBlurAmount = 0;
@@ -437,9 +472,25 @@ async function tensor_draw_pixel(canvas, img)
             canvas, img, coloredPartImage, opacity, maskBlurAmount,
             flipHorizontal);
     }
-    catch(error){   
-        Animator.tfjs_draw_counter  = 0
-        // Should be filling with a black/gray rect entirely, to keep User anonymous...
+    catch(error){
+        console.log(error)
+        canvas.getContext('2d').fillRect(0,0, canvas.width, canvas.height)
+    }
+}
+
+function drawBlurSegment(canvas, img)
+{
+    try{
+        const backgroundBlurAmount = 20
+        const flipHorizontal = false
+        const edgeBlurAmount = 4
+        // Draw the colored part image on top of the original image onto a canvas.
+        bodyPix.drawBokehEffect(
+            canvas, img, Animator.segment,
+            backgroundBlurAmount, edgeBlurAmount, flipHorizontal
+        );
+    }
+    catch(error){
         console.log(error)
         canvas.getContext('2d').fillRect(0,0, canvas.width, canvas.height)
     }

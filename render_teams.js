@@ -367,7 +367,7 @@ function nextVideoFrame()
 */
 function drawCanvas(canvas, img, draw_type) 
 {
-    if(Animator.draw_type==="tfjs-pixel"){
+    if(Animator.draw_type.indexOf("tfjs") >= 0){
         // NOT SUPPORTED ON TEAMS. YET.
         canvas.getContext('2d').filter="none"
         canvas.getContext('2d').drawImage(img, 0, 0)
