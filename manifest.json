@@ -3,7 +3,7 @@
 
     "name": "DogeCam",
     "description": " A chrome extension to make your video calls Doge-y!",
-    "version": "0.2.0",
+    "version": "0.3.0",
 
     "icons": {
         "16": "/img/doge_icon_16.png",
