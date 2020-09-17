@@ -28,17 +28,13 @@
     
 # Notes/Known Issues:
 
-1. ***TFJS performance issues***: The TFJS draw_mode is way too compute intensive. Botches the UI responsiveness. Possible approaches:
-    * Worker.js & OffScreenCanvas: Do all the drawing computes with the OffScreenCanvas and in a seperate web 'worker'.
+1. ***TFJS Blur/Pixel performance issues***: The Blur/Pixel mode are compute intensive modes, utilizing high CPU/RAM. 
+    * ***Incase the modes are not behaving as intended, disable video on the app and wait 5 seconds before enabling the video again.***
   
-2. ***Persistent Storage & Reads***: Since our combined.js is technically not a content script but an injected script, it doesn't have the exposure to chrome APIs.
-    * To overcome that drawback, we pass the messages on update/onchange from the base.js(content script) to combined.js.
-    * base.js and the popup have all the access to chrome/broswer APIs.
-
-3. ***Microsoft Teams***: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes: 
+2. ***Microsoft Teams does not support Blur/Pixel modes***: Can't manage to load TFJS/Bodypix modules on Teams due to a module name error in their 'almond.js' check/module management. Tried Workarounds/Fixes: 
     * ***Loading render_teams.js without the TFJS src/modules***: This allows our script to load up and we can continue with the standard 2D filters. We should probably attempt to include TFJS for Teams still.
     
-4. ***Video-Playback mode***: At times, due to timing issues and page load delays, the playback video may not work if you launch the app/page with the playback mode selected.
+3. ***Video-Playback mode***: At times, due to timing issues and page load delays, the playback video may not work if you launch the app/page with the playback mode selected.
     * ***Ideally, keep the 2D/no-filter mode on and switch to the the video-playback mode once the call/app has fully loaded.***
     
 
