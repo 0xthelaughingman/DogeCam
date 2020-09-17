@@ -98,14 +98,14 @@ function utils_json_res(constraints, fallback_constraints)
         });
 
         if(max_height==0 || max_width==0){
-            max_height = fallback_constraints.height.max
-            max_width = fallback_constraints.width.max
+            max_height = fallback_constraints.height
+            max_width = fallback_constraints.width
         }
     }
     catch(error){ 
         console.log("utils error", error)
-        max_height = fallback_constraints.height.max
-        max_width = fallback_constraints.width.max
+        max_height = fallback_constraints.height
+        max_width = fallback_constraints.width
     }
 
     return [ max_width, max_height ]
